@@ -1,11 +1,15 @@
 <script>
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabaseClient";
+import {user} from "../sessionStore"
 let profile;
 let loading = true;
-async function getProfileData(){
+$:{ 
+    if($user) getProfileData($user);
+}
+
+async function getProfileData(user){
     try{
         loading = true;
-        const user = supabase.auth.user();
 
         let {data, error, status} = await supabase
             .from('profiles')
@@ -23,17 +27,14 @@ async function getProfileData(){
         console.log(error.message)
     }
     finally{
-        loading = false
+        loading = false;
     }
 }
-
-getProfileData();
 </script>
 
 {#if profile}
 <p>
     {profile.username}
     {profile.website}
-    {profile.avatar_url}
 </p>
 {/if}

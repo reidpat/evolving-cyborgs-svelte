@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { beforeUpdate, onMount } from 'svelte';
 	import { user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
@@ -11,17 +11,10 @@
 	let loading = false;
 
 	let newHabitName = '';
+	let shouldUpdateHabits = true;
 
 	onMount(async () => {
-		let {
-			data: Habits,
-			error,
-			status
-		} = await supabase
-			.from('habits')
-			.select(`id, created_at, is_complete, name, timeline(id, created_at)`)
-			.eq('user_id', $user.id);
-		habits = Habits;
+
 
 		let userID = $user.id;
 		const habitsSubscription = supabase
@@ -31,12 +24,16 @@
 			})
 			.subscribe();
 
+		await updateHabitsData();
+
 		// const timeline = supabase
 		// 	.from(`timeline:user_id=eq.${userID}`)
 		// 	.on('*', (payload) => {
 		// 		updateHabitsData();
 		// 	})
 		// 	.subscribe();
+
+		await resetHabits();
 	});
 
 	async function updateHabitsData() {
@@ -47,24 +44,60 @@
 			status
 		} = await supabase
 			.from('habits')
-			.select(`id, created_at, is_complete, name, timeline(id, created_at)`)
+			.select(`id, created_at, is_complete, name, streak, goal, timeline(id, created_at)`)
 			.eq('user_id', $user.id);
-		habits = Habits;
+
+		habits = Habits.map(habit => {
+			let threshold = new Date();
+			threshold.setHours(0,0,0,0);
+			threshold.setDate(threshold.getDate() - habit.goal)
+			let filteredTimeline = habit.timeline.filter(event => {
+				let eventDate = new Date(event.created_at)
+				eventDate.setHours(0,0,0,0)
+				return eventDate > threshold;
+			})
+			return {...habit, goalProgress: filteredTimeline.length}
+		})
 		loading = false;
 	}
 
-	function resetHabits() {
-		habits = habits.map((habit) => {
-			let newHabit = { ...habit };
+	async function resetHabits() {
+		if (habits && shouldUpdateHabits) {
+			habits = habits.map((habit) => {
+				let newHabit = habit;
+				let timeline = habit.timeline;
+				if (timeline.length > 0) {
+					let date = new Date(timeline[timeline.length - 1].created_at);
+					let day1 = new Date(date);
+					day1.setHours(0, 0, 0, 0);
+					day1.setDate(date.getDate() + 1);
 
-			//get latest completion
+					let day2 = new Date(date);
+					day2.setHours(0, 0, 0, 0);
+					day2.setDate(date.getDate() + 2);
 
-			//do all the date comparison
+					let now = new Date();
+					now.setHours(0,0,0,0);
+					
 
-			//update the new habit
+					if (now.getTime() >= day2.getTime()){
+						newHabit = {...newHabit, streak: 0, is_complete: false}
 
-			return newHabit;
-		});
+					}
+					else if (now.getTime() >= day1.getTime()){
+						newHabit = {...newHabit, is_complete: false}
+					}
+
+					const { data: habit_update } = supabase
+						.from('habits')
+						.update({...newHabit})
+						.eq('id', habit.id);
+				}
+
+				return { ...newHabit };
+			});
+			shouldUpdateHabits = false;
+		}
 	}
 
 	function updateHabitUI(newHabit) {
@@ -85,7 +118,17 @@
 	}
 	async function completeHabit(habit) {
 		if (!loading) {
-			let newHabit = { ...habit, is_complete: !habit.is_complete };
+			let streak;
+			let goalProgress;
+			if(habit.is_complete){
+				streak = habit.streak - 1;
+				goalProgress = habit.goalProgress - 1;
+			}
+			else {
+				streak = habit.streak + 1;
+				goalProgress = habit.goalProgress + 1;
+			}
+			let newHabit = { ...habit, is_complete: !habit.is_complete, streak, goalProgress};
 
 			updateHabitUI(newHabit);
 			loading = true;
@@ -99,7 +142,7 @@
 
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete })
+					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
 			} else {
 				if (habit.timeline && habit.timeline.length > 0) {
@@ -111,7 +154,7 @@
 
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete })
+					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
 			}
 
@@ -131,7 +174,9 @@
 
 <div class="content-container">
 	<h1>Habits</h1>
-
+	{#await habits}
+	<p>Loading...</p>
+	{:then habits}
 	{#each habits as habit}
 		<div class="card">
 			<p>{habit.name}</p>
@@ -144,25 +189,18 @@
 					check_box_outline_blank
 				</span>
 			{/if}
+			<p>Streak: {habit.streak}</p>
+			
 			{#if habit.timeline && habit.timeline.length > 0}
-				<p>
-					{new Date(habit.timeline[habit.timeline.length - 1].created_at).toLocaleString('en-US', {
-						weekday: 'short', // long, short, narrow
-						day: 'numeric', // numeric, 2-digit
-						year: 'numeric', // numeric, 2-digit
-						month: 'long', // numeric, 2-digit, long, short, narrow
-						hour: 'numeric', // numeric, 2-digit
-						minute: 'numeric', // numeric, 2-digit
-						second: 'numeric' // numeric, 2-digit
-					})}
-				</p>
+			<p>Goal: {habit.goalProgress}/{habit.goal}</p>
 			{:else if !loading}
 				<p>Never Completed</p>
 			{/if}
 		</div>
 	{/each}
+	{/await}
 	{#if loading}
-	<Loading withOverlay={false} small />
+		<Loading withOverlay={false} small />
 	{/if}
 	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16} />
 	<Modal

@@ -1,5 +1,5 @@
 <script>
-	import { beforeUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
@@ -179,7 +179,7 @@
 	{:then habits}
 	{#each habits as habit}
 		<div class="card">
-			<p>{habit.name}</p>
+			<h2>{habit.name}</h2>
 			{#if habit.is_complete}
 				<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
 					check_box
@@ -222,15 +222,4 @@
 </div>
 
 <style>
-	.card {
-		margin: 50px;
-		padding: 10px;
-		box-shadow: 1px 1px 1px 1px rgba(255, 255, 255, 0.452);
-		background-color: rgba(128, 128, 128, 0.411);
-		border-radius: 2px;
-	}
-	.clickable {
-		cursor: pointer;
-		user-select: none;
-	}
 </style>

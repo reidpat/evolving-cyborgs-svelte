@@ -25,14 +25,15 @@
 	});
 
 	function updateVicesUI(newVice) {
+        console.log(newVice)
 		if (!loading) {
 			let found = false;
 			vices = vices.map((vice) => {
 				if (newVice.id !== vice.id) {
-					return updateVice(vice);
+					return {...updateVice({...vice,timeline: vice.timeline}), };
 				} else {
 					found = true;
-					return updateVice(newVice);
+					return {...updateVice({...newVice,timeline: vice.timeline})};
 				}
 			});
 			if (!found) {
@@ -58,6 +59,7 @@
 	}
 
 	function updateVice(vice) {
+
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
 		let now = new Date();
 		let currentSeconds = now - last;
@@ -72,6 +74,7 @@
 
 		return {
 			...vice,
+            timeline: vice.timeline,
 			current_ui: current,
 			currentSeconds,
 			best_ui: best,
@@ -91,7 +94,7 @@
 
 	async function resetVice(vice) {
         
-		let newVice = vice;
+		let newVice = {...vice};
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
 		let now = new Date();
 		let currentSeconds = now - last;
@@ -109,7 +112,7 @@
 
 		updateViceUI(newVice);
 
-        console.log(newVice);
+
 
         let loading = true;
 
@@ -123,7 +126,6 @@
 			.update({ best: newVice.best, total: newVice.total })
 			.eq('id', newVice.id);
 
-        console.log(data[0]);
         loading = false;
 	}
 

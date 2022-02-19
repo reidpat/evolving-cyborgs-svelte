@@ -46,7 +46,7 @@
 			status
 		} = await supabase
 			.from('habits')
-			.select(`id, created_at, is_complete, name, streak, goal, timeline(id, created_at)`)
+			.select(`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded)`)
 			.eq('user_id', $user.id);
 
 		habits = Habits.map(habit => {
@@ -151,7 +151,7 @@
 					.eq('id', habit.id);
 			} else {
 				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
-				console.log(xp);
+			
 
 				if (habit.timeline && habit.timeline.length > 0) {
 					const { data: timeline_update, error } = await supabase
@@ -165,7 +165,7 @@
 					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
 
-				dispatch('addXp', {xp: xp});
+				dispatch('addXp', {xp: -xp});
 			}
 
 			await updateHabitsData();

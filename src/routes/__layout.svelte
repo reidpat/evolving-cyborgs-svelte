@@ -4,7 +4,6 @@
 	import '../app.css';
 	import { user, profileStore } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
-  import { onMount } from 'svelte';
   import {Eventbus} from 'svelte-eventbus';
 
 	user.set(supabase.auth.user());
@@ -14,18 +13,7 @@
 		console.log($user);
 	});
 
-  onMount(async () => {
-		let { data: profiles, error } = await supabase.from('profiles').select('*').eq('id', $user.id);
-    profileStore.set(profiles[0]);
 
-    let userID = $user.id;
-    const profilesSubscription = supabase
-			.from(`profiles:id=eq.${userID}`)
-			.on('*', (payload) => {
-				profileStore.set({...payload.new});
-			})
-			.subscribe();
-	});
 
   
 
@@ -56,17 +44,13 @@
       .eq('id', $user.id)
   }
 
-  function testXP(event){
-    console.log(event.detail.xp);
-  }
-
 
 
 </script>
 
 <User />
 <div class="content-container">
-  <Eventbus on:addXp={testXP}>
+  <Eventbus on:addXp={addXp}>
 	{#if $user}
 		<slot />
 	{/if}

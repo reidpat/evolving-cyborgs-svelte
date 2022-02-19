@@ -5,6 +5,8 @@
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
 	import Reset16 from 'carbon-icons-svelte/lib/Reset16';
+	import { createEventbusDispatcher } from 'svelte-eventbus';
+	const dispatch = createEventbusDispatcher();
 
 	let newViceName = '';
 	let open = false;
@@ -25,15 +27,15 @@
 	});
 
 	function updateVicesUI(newVice) {
-        console.log(newVice)
+		console.log(newVice);
 		if (!loading) {
 			let found = false;
 			vices = vices.map((vice) => {
 				if (newVice.id !== vice.id) {
-					return {...updateVice({...vice,timeline: vice.timeline}), };
+					return { ...updateVice({ ...vice, timeline: vice.timeline }) };
 				} else {
 					found = true;
-					return {...updateVice({...newVice,timeline: vice.timeline})};
+					return { ...updateVice({ ...newVice, timeline: vice.timeline }) };
 				}
 			});
 			if (!found) {
@@ -58,12 +60,30 @@
 		loading = false;
 	}
 
-	function updateVice(vice) {
+	async function awardXp(days) {
+		let xp = days * 10;
+		console.log(xp);
+		dispatch('addXp', {xp: xp})
 
+		const { data, error } = await supabase
+				.from('vices')
+				.update({ last_award: days })
+				.eq('user_id', $user.id);
+	}
+	
+
+	function updateVice(vice) {
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
 		let now = new Date();
 		let currentSeconds = now - last;
 		let current = parseSecondsToDHM(currentSeconds);
+
+		if (current.days > vice.last_award) {
+			console.log(current.days - vice.last_award);
+			awardXp(current.days - vice.last_award);
+			vice.last_award = current.days;
+
+		}
 
 		if (currentSeconds > vice.best) {
 			vice.best = currentSeconds;
@@ -74,7 +94,7 @@
 
 		return {
 			...vice,
-            timeline: vice.timeline,
+			timeline: vice.timeline,
 			current_ui: current,
 			currentSeconds,
 			best_ui: best,
@@ -93,8 +113,7 @@
 	};
 
 	async function resetVice(vice) {
-        
-		let newVice = {...vice};
+		let newVice = { ...vice };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
 		let now = new Date();
 		let currentSeconds = now - last;
@@ -112,21 +131,18 @@
 
 		updateViceUI(newVice);
 
-
-
-        let loading = true;
+		let loading = true;
 
 		const { data: timeline } = await supabase
 			.from('timeline')
 			.insert([{ user_id: $user.id, vice: newVice.id }]);
-
 
 		const { data, error } = await supabase
 			.from('vices')
 			.update({ best: newVice.best, total: newVice.total })
 			.eq('id', newVice.id);
 
-        loading = false;
+		loading = false;
 	}
 
 	function updateViceUI(newVice) {

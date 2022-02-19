@@ -1,40 +1,48 @@
 <script>
-import { supabase } from "../supabaseClient";
-import {user} from "../sessionStore"
-let profile;
-let loading = true;
-$:{ 
-    if($user) getProfileData($user);
-}
+	import { user, profileStore } from '../sessionStore';
 
-async function getProfileData(user){
-    try{
-        loading = true;
+	import SignIn from './SignIn.svelte';
+	import SignOut from './SignOut.svelte';
 
-        let {data, error, status} = await supabase
-            .from('profiles')
-            .select(`username, website, avatar_url`)
-            .eq('id', user.id)
-            .single()
+	import { ProgressBar } from 'carbon-components-svelte';
 
-        if(error && status !== 406) throw error
+	let profile;
 
-        if(data){
-            profile = {...data}
-        }
-    }
-    catch(error){
-        console.log(error.message)
-    }
-    finally{
-        loading = false;
-    }
-}
+
+	$: profile = $profileStore;
+	
 </script>
+<div class="outer-nav">
+<div class="inner-nav">
+	<h1>EC</h1>
+	<div class="xp-bar">
+		{#if $user}
+			<ProgressBar id="xp_bar" value={profile.xp} max={profile.next_level_xp} labelText={`Level: ${profile.level}`} helperText={`${profile.xp}/${profile.next_level_xp} xp`} />
+		{/if}
+	</div>
+	<div>
+		{#if $user}			
+			<SignOut />
+		{:else}
+			<SignIn />
+		{/if}
+	</div>
+</div>
+</div>
 
-{#if profile}
-<p>
-    {profile.username}
-    {profile.website}
-</p>
-{/if}
+<style>
+.inner-nav {
+    display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: auto;
+}
+.outer-nav{
+    width: 100%; 
+    margin: auto;
+    background-color: #1d1c1f;
+    color: #c4c2b9;
+    padding: 10px;
+}
+.xp-bar{
+	flex: 1;
+	margin: 0px 20px;
+}
+</style>

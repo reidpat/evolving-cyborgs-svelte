@@ -13,6 +13,9 @@
     cursor: pointer;
     user-select: none;
 }
+.bx--progress-bar{
+    flex: 1;
+}
 
 body,html{
     margin:0px;

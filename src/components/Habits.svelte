@@ -1,9 +1,11 @@
 <script>
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
+	import {createEventbusDispatcher} from 'svelte-eventbus';
+    const dispatch = createEventbusDispatcher();
 
 	let habits = [];
 	let open = false;
@@ -136,15 +138,21 @@
 			if (newHabit.is_complete) {
 				//add to timeline
 
+				let xp = (newHabit.streak + habit.goalProgress) * 10
+				dispatch('addXp', {xp: xp});
+
 				const { data: timeline, error } = await supabase
 					.from('timeline')
-					.insert([{ user_id: $user.id, habit: habit.id }]);
+					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: xp}]);
 
 				const { data: habit_update } = await supabase
 					.from('habits')
 					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
 			} else {
+				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
+				console.log(xp);
+
 				if (habit.timeline && habit.timeline.length > 0) {
 					const { data: timeline_update, error } = await supabase
 						.from('timeline')
@@ -156,6 +164,8 @@
 					.from('habits')
 					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
+
+				dispatch('addXp', {xp: xp});
 			}
 
 			await updateHabitsData();

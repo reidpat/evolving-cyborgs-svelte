@@ -29,7 +29,7 @@
 		if (xp <= 0) {
 			xp = 0;
 		} else {
-      toast.push(`You gained ${xp} xp from ${event.detail.event}`)
+      toast.push(`You gained ${newXp} xp from ${event.detail.event}`)
 		}
 
 		profileStore.set({ ...$profileStore, xp, level, next_level_xp });

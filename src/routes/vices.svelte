@@ -60,15 +60,17 @@
 		loading = false;
 	}
 
-	async function awardXp(days) {
-		let xp = days * 10;
-		console.log(xp);
-		dispatch('addXp', {xp: xp})
+	async function awardXp(days, last, vice) {
+		let xp = (days - last) * 10;
+		console.log(xp, days);
+		dispatch('addXp', {xp: xp, event: vice.name})
 
 		const { data, error } = await supabase
 				.from('vices')
 				.update({ last_award: days })
 				.eq('user_id', $user.id);
+
+		console.log(data);
 	}
 	
 
@@ -77,10 +79,12 @@
 		let now = new Date();
 		let currentSeconds = now - last;
 		let current = parseSecondsToDHM(currentSeconds);
-
+		
+		console.log(vice.last_award)
+		console.log(current.days);
 		if (current.days > vice.last_award) {
 			console.log(current.days - vice.last_award);
-			//awardXp(current.days - vice.last_award);
+			awardXp(current.days, vice.last_award, vice);
 			vice.last_award = current.days;
 		}
 

@@ -139,7 +139,7 @@
 				//add to timeline
 
 				let xp = (newHabit.streak + habit.goalProgress) * 10
-				dispatch('addXp', {xp: xp});
+				dispatch('addXp', {xp: xp, event: habit.name});
 
 				const { data: timeline, error } = await supabase
 					.from('timeline')
@@ -165,7 +165,7 @@
 					.update({ is_complete: newHabit.is_complete, streak})
 					.eq('id', habit.id);
 
-				dispatch('addXp', {xp: -xp});
+				dispatch('addXp', {xp: -xp, event: habit.name});
 			}
 
 			await updateHabitsData();

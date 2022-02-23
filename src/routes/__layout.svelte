@@ -5,7 +5,7 @@
 	import { user, profileStore } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Eventbus } from 'svelte-eventbus';
-  import { ToastNotification } from "carbon-components-svelte";
+  import { SvelteToast, toast } from '@zerodevx/svelte-toast'
 
 	user.set(supabase.auth.user());
 
@@ -26,10 +26,10 @@
 			next_level_xp = Math.round(level ** 1.5 + level * 9) * 10;
 		}
 
-		if (xp < 0) {
+		if (xp <= 0) {
 			xp = 0;
 		} else {
-      let open = true;
+      toast.push(`You gained ${xp} xp from ${event.detail.event}`)
 		}
 
 		profileStore.set({ ...$profileStore, xp, level, next_level_xp });
@@ -40,7 +40,7 @@
 			.eq('id', $user.id);
 	}
 </script>
-
+<SvelteToast />
 <User />
 <div class="content-container">
 	<Eventbus on:addXp={addXp}>

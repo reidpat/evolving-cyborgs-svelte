@@ -80,9 +80,8 @@
 
 		if (current.days > vice.last_award) {
 			console.log(current.days - vice.last_award);
-			awardXp(current.days - vice.last_award);
+			//awardXp(current.days - vice.last_award);
 			vice.last_award = current.days;
-
 		}
 
 		if (currentSeconds > vice.best) {

@@ -6,6 +6,7 @@
 	import { supabase } from '../supabaseClient';
 	import { Eventbus } from 'svelte-eventbus';
   import { SvelteToast, toast } from '@zerodevx/svelte-toast'
+  import BottomNav from '../components/BottomNav.svelte';
 
 	user.set(supabase.auth.user());
 
@@ -49,3 +50,4 @@
 		{/if}
 	</Eventbus>
 </div>
+<BottomNav />

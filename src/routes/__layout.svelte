@@ -27,9 +27,9 @@
 			next_level_xp = Math.round(level ** 1.5 + level * 9) * 10;
 		}
 
-		if (xp <= 0) {
+		if (xp < 0) {
 			xp = 0;
-		} else {
+		} else if (newXp > 0) {
       toast.push(`You gained ${newXp} xp from ${event.detail.event}`)
 		}
 

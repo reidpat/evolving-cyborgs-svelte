@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { user } from '../sessionStore';
+	import { habitStore, user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
@@ -8,25 +8,36 @@
     const dispatch = createEventbusDispatcher();
 
 	let habits = [];
+
+	$: {
+		if($habitStore){
+			habits = [...$habitStore];
+		}
+	}
 	let open = false;
 
 	let loading = false;
 
 	let newHabitName = '';
-	let shouldUpdateHabits = true;
+	let shouldUpdateHabits = false;
 
 	onMount(async () => {
-
+		if($habitStore){
+			habits = [...$habitStore];
+		}
 
 		let userID = $user.id;
+
 		const habitsSubscription = supabase
 			.from(`habits:user_id=eq.${userID}`)
 			.on('*', (payload) => {
 				updateHabitUI(payload.new);
 			})
 			.subscribe();
-
-		await updateHabitsData();
+		
+		if(!$habitStore){
+			await updateHabitsData();
+		}
 
 		// const timeline = supabase
 		// 	.from(`timeline:user_id=eq.${userID}`)
@@ -61,6 +72,7 @@
 			return {...habit, goalProgress: filteredTimeline.length}
 		})
 		loading = false;
+		habitStore.set(habits);
 	}
 
 	async function resetHabits() {
@@ -113,6 +125,7 @@
 					return { ...newHabit };
 				}
 			});
+			habitStore.set(habits);
 			if (!found) {
 				habits = [...habits, { ...newHabit }];
 			}
@@ -184,9 +197,7 @@
 
 <div class="content-container">
 	<h1>Habits</h1>
-	{#await habits}
-	<p>Loading...</p>
-	{:then habits}
+	{#if habits}
 	{#each habits as habit}
 		<div class="card">
 			<h2>{habit.name}</h2>
@@ -208,7 +219,7 @@
 			{/if}
 		</div>
 	{/each}
-	{/await}
+	{/if}
 	{#if loading}
 		<Loading withOverlay={false} small />
 	{/if}

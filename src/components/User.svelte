@@ -12,8 +12,10 @@
 
 	$: profile = $profileStore;
 	onMount(async () => {
-		let { data: profiles, error } = await supabase.from('profiles').select('*').eq('id', $user.id);
-		profileStore.set(profiles[0]);
+		if(!$profileStore){
+			let { data: profiles, error } = await supabase.from('profiles').select('*').eq('id', $user.id);
+			profileStore.set(profiles[0]);
+		}
 
 		let userID = $user.id;
 		const profilesSubscription = supabase

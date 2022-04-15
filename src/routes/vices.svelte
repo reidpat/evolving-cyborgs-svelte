@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { user } from '../sessionStore';
+	import { user, viceStore } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
@@ -14,6 +14,12 @@
 	let vices = [];
 	let loading = false;
 
+	$: {
+		if ($viceStore) {
+			vices = [...$viceStore];
+		}
+	}
+
 	onMount(async () => {
 		let userID = $user.id;
 		const vicesSubscription = supabase
@@ -22,7 +28,8 @@
 				updateVicesUI(payload.new);
 			})
 			.subscribe();
-
+		
+		
 		await updateVicesData();
 	});
 
@@ -41,48 +48,51 @@
 			if (!found) {
 				vices = [...vices, { ...newVice }];
 			}
+			viceStore.set(vices);
 		}
 	}
 
 	async function updateVicesData() {
 		loading = true;
-		let {
-			data: Vices,
-			error,
-			status
-		} = await supabase
-			.from('vices')
-			.select(`id, created_at, best, last_award, total,name, timeline(id, created_at)`)
-			.eq('user_id', $user.id);
-		vices = Vices.map((vice) => {
-			return updateVice(vice);
-		});
+		let Vices = $viceStore;
+		if (!$viceStore) {
+			let {
+				data,
+				error,
+				status
+			} = await supabase
+				.from('vices')
+				.select(`id, created_at, best, last_award, total,name, timeline(id, created_at)`)
+				.eq('user_id', $user.id);
+			Vices = data;
+		}
+			vices = Vices.map((vice) => {
+				return updateVice(vice);
+			});
+			viceStore.set(vices);
 		loading = false;
 	}
 
-	async function awardXp(days) {
-		let xp = days * 10;
-		console.log(xp);
-		dispatch('addXp', {xp: xp})
+	async function awardXp(days, last, vice) {
+		let xp = (days - last) * 10;
+		dispatch('addXp', { xp: xp, event: vice.name });
 
 		const { data, error } = await supabase
-				.from('vices')
-				.update({ last_award: days })
-				.eq('user_id', $user.id);
+			.from('vices')
+			.update({ last_award: days })
+			.eq('user_id', $user.id);
+
 	}
-	
 
 	function updateVice(vice) {
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
 		let now = new Date();
 		let currentSeconds = now - last;
 		let current = parseSecondsToDHM(currentSeconds);
-
 		if (current.days > vice.last_award) {
 			console.log(current.days - vice.last_award);
-			awardXp(current.days - vice.last_award);
+			awardXp(current.days, vice.last_award, vice);
 			vice.last_award = current.days;
-
 		}
 
 		if (currentSeconds > vice.best) {

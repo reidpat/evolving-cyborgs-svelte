@@ -11,7 +11,14 @@
 	let profile;
 
 	$: profile = $profileStore;
-	onMount(async () => {
+	$: {
+		if($user){
+			console.log("startup");
+			startupLoad();
+		}
+	}
+
+	async function startupLoad(){
 		if(!$profileStore){
 			let { data: profiles, error } = await supabase.from('profiles').select('*').eq('id', $user.id);
 			profileStore.set(profiles[0]);
@@ -24,7 +31,7 @@
 				profileStore.set({ ...payload.new });
 			})
 			.subscribe();
-	});
+	}
 </script>
 
 <div class="outer-nav">

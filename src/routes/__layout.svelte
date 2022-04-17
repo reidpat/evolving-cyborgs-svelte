@@ -5,8 +5,8 @@
 	import { user, profileStore } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { Eventbus } from 'svelte-eventbus';
-  import { SvelteToast, toast } from '@zerodevx/svelte-toast'
-  import BottomNav from '../components/BottomNav.svelte';
+	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import BottomNav from '../components/BottomNav.svelte';
 
 	user.set(supabase.auth.user());
 
@@ -30,7 +30,7 @@
 		if (xp < 0) {
 			xp = 0;
 		} else if (newXp > 0) {
-      toast.push(`You gained ${newXp} xp from ${event.detail.event}`)
+			toast.push(`You gained ${newXp} xp from ${event.detail.event}`);
 		}
 
 		profileStore.set({ ...$profileStore, xp, level, next_level_xp });
@@ -41,6 +41,7 @@
 			.eq('id', $user.id);
 	}
 </script>
+
 <SvelteToast />
 <User />
 <div class="content-container">
@@ -50,4 +51,6 @@
 		{/if}
 	</Eventbus>
 </div>
-<BottomNav />
+{#if $user}
+	<BottomNav />
+{/if}

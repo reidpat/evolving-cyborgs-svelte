@@ -3,7 +3,7 @@
 
 async function signIn() {
   let redirect = 'http://evolvingcyborgs.netlify.app';
-  if(!process.env.ROLLUP_WATCH){
+  if(import.meta.env.DEV){
     redirect = 'http://localhost:3000'
   }
   const { user, session, error } = await supabase.auth.signIn(

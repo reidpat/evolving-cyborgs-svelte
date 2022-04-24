@@ -1,3 +1,14 @@
+<script context="module">
+	export async function load({session, context }) {
+			let sessionInfo = JSON.parse(session.session);
+    return {
+		props: {
+			sessionInfo,
+		}
+	}
+  } 
+</script>
+
 <script>
 	import User from '../components/User.svelte';
 
@@ -7,22 +18,34 @@
 	import { Eventbus } from 'svelte-eventbus';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
-	import Cookies from 'js-cookie';
-import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-	onMount(async()=> {
-		console.log(Cookies.get('token'));
-		const {user: userAuth, error} = await supabase.auth.api.getUser(Cookies.get('token'))
-		console.log(userAuth);
-		if(error){
-			console.log(error);
+	export let sessionInfo;
+
+
+	onMount(async () => {
+		const response = await fetch('/signin', {
+				method: 'get',
+				headers:{
+					"token": JSON.stringify(sessionInfo.access_token),
+				} 
+			});
+		if(!$user){
+			user.set(supabase.auth.user());
 		}
-		user.set(userAuth);
-	})
+	});
 
-	supabase.auth.onAuthStateChange((event, session) => {
-		if(event === "SIGNED_IN"){
-			Cookies.set('token', session.access_token, {expires: 7});
+
+
+	supabase.auth.onAuthStateChange(async (event, session) => {
+		
+		if (event === 'SIGNED_IN') {
+			console.log(session.user.email);
+			const response = await fetch('/signin', {
+				method: 'post',
+				body: JSON.stringify(session),
+			});
+			console.log(response);
 		}
 		user.set(session.user);
 		console.log($user);

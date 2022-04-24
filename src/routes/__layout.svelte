@@ -7,10 +7,22 @@
 	import { Eventbus } from 'svelte-eventbus';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
+	import Cookies from 'js-cookie';
+import { onMount } from 'svelte';
 
-	user.set(supabase.auth.user());
+	onMount(async()=> {
+		const {user: userAuth, error} = await supabase.auth.api.getUser(Cookies.get('token'))
+		console.log(userAuth);
+		if(error){
+			console.log(error);
+		}
+		user.set(userAuth);
+	})
 
-	supabase.auth.onAuthStateChange((_, session) => {
+	supabase.auth.onAuthStateChange((event, session) => {
+		if(event === "SIGNED_IN"){
+			Cookies.set('token', session.access_token);
+		}
 		user.set(session.user);
 		console.log($user);
 	});

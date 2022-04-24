@@ -22,7 +22,7 @@ import { onMount } from 'svelte';
 
 	supabase.auth.onAuthStateChange((event, session) => {
 		if(event === "SIGNED_IN"){
-			Cookies.set('token', session.access_token);
+			Cookies.set('token', session.access_token, {expires: 7});
 		}
 		user.set(session.user);
 		console.log($user);

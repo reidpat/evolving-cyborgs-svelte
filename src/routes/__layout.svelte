@@ -11,6 +11,7 @@
 import { onMount } from 'svelte';
 
 	onMount(async()=> {
+		console.log(Cookies.get('token'));
 		const {user: userAuth, error} = await supabase.auth.api.getUser(Cookies.get('token'))
 		console.log(userAuth);
 		if(error){

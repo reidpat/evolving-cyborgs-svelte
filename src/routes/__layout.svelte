@@ -8,7 +8,7 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
 
-	user.set(supabase.auth.api.getUserByCookie());
+	user.set(supabase.auth.user());
 
 	supabase.auth.onAuthStateChange((_, session) => {
 		user.set(session.user);

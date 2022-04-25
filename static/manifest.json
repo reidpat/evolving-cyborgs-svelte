@@ -11,7 +11,8 @@
       {
         "src": "cyborg.png",
         "type": "image/png",
-        "sizes": "192x192"
+        "sizes": "192x192",
+        "purpose": "any maskable"
       }
     ],
     "background_color": "#3367D6",

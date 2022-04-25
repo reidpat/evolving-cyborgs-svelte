@@ -1,6 +1,9 @@
 <script context="module">
 	export async function load({session, context }) {
-			let sessionInfo = JSON.parse(session.session);
+		let sessionInfo;
+		if(session.session){
+			sessionInfo = JSON.parse(session.session);
+		}
     return {
 		props: {
 			sessionInfo,
@@ -24,12 +27,14 @@
 
 
 	onMount(async () => {
+		if(sessionInfo){
 		const response = await fetch('/signin', {
 				method: 'get',
 				headers:{
 					"token": JSON.stringify(sessionInfo.access_token),
 				} 
 			});
+		}
 		if(!$user){
 			user.set(supabase.auth.user());
 		}

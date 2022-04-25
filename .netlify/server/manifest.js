@@ -28,12 +28,13 @@ const manifest = {
   assets: /* @__PURE__ */ new Set(["favicon.png", "manifest.json", "meditation_192.png", "meditation_512.png", "service-worker.js"]),
   _: {
     mime: { ".png": "image/png", ".json": "application/json" },
-    entry: { "file": "start-a49c9859.js", "js": ["start-a49c9859.js", "chunks/index-d41602b9.js", "chunks/index-ffc5a9d1.js"], "css": [] },
+    entry: { "file": "start-f6942cd8.js", "js": ["start-f6942cd8.js", "chunks/index-d41602b9.js", "chunks/index-ffc5a9d1.js"], "css": [] },
     nodes: [
       () => Promise.resolve().then(() => __toESM(require("./nodes/0.js"))),
       () => Promise.resolve().then(() => __toESM(require("./nodes/1.js"))),
       () => Promise.resolve().then(() => __toESM(require("./nodes/2.js"))),
-      () => Promise.resolve().then(() => __toESM(require("./nodes/3.js")))
+      () => Promise.resolve().then(() => __toESM(require("./nodes/3.js"))),
+      () => Promise.resolve().then(() => __toESM(require("./nodes/4.js")))
     ],
     routes: [
       {
@@ -43,6 +44,15 @@ const manifest = {
         path: "/",
         shadow: null,
         a: [0, 2],
+        b: [1]
+      },
+      {
+        type: "page",
+        pattern: /^\/offline\/?$/,
+        params: null,
+        path: "/offline",
+        shadow: null,
+        a: [0, 3],
         b: [1]
       },
       {
@@ -57,7 +67,7 @@ const manifest = {
         params: null,
         path: "/vices",
         shadow: null,
-        a: [0, 3],
+        a: [0, 4],
         b: [1]
       }
     ]

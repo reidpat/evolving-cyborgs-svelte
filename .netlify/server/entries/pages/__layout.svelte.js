@@ -368,7 +368,10 @@ const BottomNav = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, s
 </div>`;
 });
 async function load({ session, context }) {
-  let sessionInfo = JSON.parse(session.session);
+  let sessionInfo;
+  if (session.session) {
+    sessionInfo = JSON.parse(session.session);
+  }
   return { props: { sessionInfo } };
 }
 const _layout = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {

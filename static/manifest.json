@@ -1,7 +1,7 @@
 {
     "short_name": "Cyborgs",
     "name": "Evolving Cyborgs",
-    "start_url": "https://evolvingcyborgs.netlify.app/",
+    "start_url": "/",
     "icons": [
       {
         "src": "meditation_512.png",

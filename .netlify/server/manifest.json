@@ -47,6 +47,14 @@
       "_Add16-3d36ae4a.js"
     ]
   },
+  "src/routes/offline.svelte": {
+    "file": "entries/pages/offline.svelte.js",
+    "src": "src/routes/offline.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-d51717b2.js"
+    ]
+  },
   "src/routes/vices.svelte": {
     "file": "entries/pages/vices.svelte.js",
     "src": "src/routes/vices.svelte",

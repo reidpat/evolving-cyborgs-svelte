@@ -22,4 +22,14 @@ export async function post(event) {
 export async function get(event){
     let access_token = await event.request.headers.get("token");
     const { user, error } = await supabase.auth.setAuth(access_token);
+    if(error){
+        return {
+            status: error.status,
+            message: error.message
+        }
+    }
+    return {
+        status: 200,
+        message: "all good!"
+    }
 }

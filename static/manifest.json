@@ -7,6 +7,11 @@
         "src": "meditation_512.png",
         "type": "image/png",
         "sizes": "512x512"
+      },
+      {
+        "src": "meditation_192.png",
+        "type": "image/png",
+        "sizes": "192x192"
       }
     ],
     "background_color": "#3367D6",

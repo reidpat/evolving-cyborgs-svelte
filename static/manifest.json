@@ -4,12 +4,7 @@
     "start_url": "/",
     "icons": [
       {
-        "src": "meditation_512.png",
-        "type": "image/png",
-        "sizes": "512x512"
-      },
-      {
-        "src": "meditation_192.png",
+        "src": "cyborg.png",
         "type": "image/png",
         "sizes": "192x192"
       }

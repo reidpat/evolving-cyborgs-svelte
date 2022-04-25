@@ -1958,7 +1958,7 @@ var user_hooks = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   __proto__: null,
   getSession
 }, Symbol.toStringTag, { value: "Module" }));
-const template = ({ head, body, assets: assets2, nonce }) => '	<!DOCTYPE html>\r\n<html lang="en">\r\n	<head>\r\n		<meta charset="utf-8" />\r\n		<meta name="description" content="" />\r\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\r\n		<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"\r\n      rel="stylesheet">\r\n	  <link\r\n      rel="stylesheet"\r\n      href="https://unpkg.com/carbon-components-svelte/css/g100.css"\r\n    />\r\n		<link rel="manifest" crossorigin="use-credentials" href="manifest.json"/>\r\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\r\n		' + head + "\r\n	</head>\r\n	<body>\r\n		<div>" + body + "</div>\r\n	</body>\r\n</html>";
+const template = ({ head, body, assets: assets2, nonce }) => '	<!DOCTYPE html>\r\n<html lang="en">\r\n	<head>\r\n		<meta charset="utf-8" />\r\n		<meta name="description" content="" />\r\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\r\n		<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"\r\n      rel="stylesheet">\r\n	  <link\r\n      rel="stylesheet"\r\n      href="https://unpkg.com/carbon-components-svelte/css/g100.css"\r\n    />\r\n		<link rel="manifest" crossorigin="use-credentials" href="manifest.json"/>\r\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\r\n		<meta name="theme-color" content="#317EFB"/>\r\n		' + head + "\r\n	</head>\r\n	<body>\r\n		<div>" + body + "</div>\r\n	</body>\r\n</html>";
 let read = null;
 set_paths({ "base": "", "assets": "" });
 const get_hooks = (hooks) => ({

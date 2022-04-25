@@ -2,10 +2,10 @@ const { init } = require('../handler.js');
 
 exports.handler = init({
 	appDir: "_app",
-	assets: new Set(["favicon.png","manifest.json","meditation_192.png","meditation_512.png","service-worker.js"]),
+	assets: new Set(["cyborg.png","favicon.png","manifest.json","meditation_192.png","meditation_512.png","service-worker.js"]),
 	_: {
 		mime: {".png":"image/png",".json":"application/json"},
-		entry: {"file":"start-f6942cd8.js","js":["start-f6942cd8.js","chunks/index-d41602b9.js","chunks/index-ffc5a9d1.js"],"css":[]},
+		entry: {"file":"start-2f30944f.js","js":["start-2f30944f.js","chunks/index-d41602b9.js","chunks/index-ffc5a9d1.js"],"css":[]},
 		nodes: [
 			() => Promise.resolve().then(() => require('../server/nodes/0.js')),
 			() => Promise.resolve().then(() => require('../server/nodes/1.js')),

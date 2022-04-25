@@ -48,7 +48,7 @@
 			console.log(response);
 		}
 		user.set(session.user);
-		console.log($user);
+		// console.log($user);
 	});
 
 	async function addXp(event) {

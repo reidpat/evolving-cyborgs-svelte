@@ -1,7 +1,7 @@
 {
     "short_name": "Cyborgs",
     "name": "Evolving Cyborgs",
-    "start_url": "/",
+    "start_url": "https://evolvingcyborgs.netlify.app/",
     "icons": [
       {
         "src": "meditation_512.png",
@@ -16,7 +16,7 @@
     ],
     "background_color": "#3367D6",
     "display": "standalone",
-    "scope": "/",
+    "scope": ".",
     "theme_color": "#3367D6",
     "description": "A way to relate to the digital world in a healthier way"
 }

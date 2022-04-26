@@ -19,7 +19,7 @@
 	let loading = false;
 
 	let newHabitName = '';
-	let shouldUpdateHabits = false;
+	let shouldUpdateHabits = true;
 
 	onMount(async () => {
 		if($habitStore){

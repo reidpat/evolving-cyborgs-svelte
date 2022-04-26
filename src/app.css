@@ -1,6 +1,7 @@
 .content-container{
     max-width: 1200px;
     margin: auto;
+    margin-bottom: 150px;
 }
 .card {
     margin: 50px;

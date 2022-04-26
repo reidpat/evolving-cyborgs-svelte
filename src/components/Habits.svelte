@@ -223,7 +223,9 @@
 	{#if loading}
 		<Loading withOverlay={false} small />
 	{/if}
+	<div class="add-button">
 	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16} />
+	</div>
 	<Modal
 		bind:open
 		size="xs"
@@ -243,4 +245,16 @@
 </div>
 
 <style>
+	h1 {
+		text-align: center;
+	}
+	.add-button{
+		margin-left: auto;
+		display: flex;
+		justify-content: center;
+	}
+	button {
+		margin: auto;
+		align-self: center;
+	}
 </style>

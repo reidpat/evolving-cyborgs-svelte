@@ -74,7 +74,9 @@
 	}
 
 	async function awardXp(days, last, vice) {
-		let xp = (days - last) * 10;
+		
+		let xp = (days - last) * 100;
+		console.log("xp", xp);
 		dispatch('addXp', { xp: xp, event: vice.name });
 
 		const { data, error } = await supabase
@@ -149,7 +151,7 @@
 
 		const { data, error } = await supabase
 			.from('vices')
-			.update({ best: newVice.best, total: newVice.total })
+			.update({ best: newVice.best, total: newVice.total, last_award: 0})
 			.eq('id', newVice.id);
 
 		loading = false;

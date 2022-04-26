@@ -49,6 +49,38 @@
 		await resetHabits();
 	});
 
+	//taking in current progress and goal and returning what the new goal should be
+	//3, 5, 10, 15, 20, 30, ...
+	function getNewHabitGoal(progress, goal){
+		let newGoal = goal;
+		let goalArray = [3,5,10,15,20]
+		let goalIndex = goalArray.findIndex(e => e == goal);
+		//find index of current goal
+
+		//increases goal if progress is greater than current goal
+		if(progress => goal){
+			if(goalIndex == goalArray.length - 1 || goalIndex == -1){
+				newGoal = goal + 10;
+			}
+			else{
+				newGoal = goalArray[goalIndex + 1]
+			}
+		}
+		// lowers the goal if progress falls below previous goal
+		if(progress < goal){
+			let nextGoal = goalArray[goalArray.findIndex(e => e > progress)];
+			if(nextGoal != -1){
+				newGoal = nextGoal;
+			}
+			else {
+				newGoal = goal % 10 * 10 + 10;
+			}
+			
+		}
+
+		return newGoal;
+	}
+
 	async function updateHabitsData() {
 		loading = true;
 		let {
@@ -143,7 +175,8 @@
 				streak = habit.streak + 1;
 				goalProgress = habit.goalProgress + 1;
 			}
-			let newHabit = { ...habit, is_complete: !habit.is_complete, streak, goalProgress};
+			let newGoal = getNewHabitGoal(goalProgress, habit.goal);
+			let newHabit = { ...habit, is_complete: !habit.is_complete, streak, goalProgress, goal: newGoal};
 
 			updateHabitUI(newHabit);
 			loading = true;
@@ -160,7 +193,7 @@
 
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete, streak})
+					.update({ is_complete: newHabit.is_complete, streak, goal: newHabit.goal})
 					.eq('id', habit.id);
 			} else {
 				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
@@ -175,7 +208,7 @@
 
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete, streak})
+					.update({ is_complete: newHabit.is_complete, streak,  goal: newHabit.goal})
 					.eq('id', habit.id);
 
 				dispatch('addXp', {xp: -xp, event: habit.name});
@@ -252,9 +285,5 @@
 		margin-left: auto;
 		display: flex;
 		justify-content: center;
-	}
-	button {
-		margin: auto;
-		align-self: center;
 	}
 </style>

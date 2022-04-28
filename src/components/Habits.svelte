@@ -31,7 +31,9 @@
 		const habitsSubscription = supabase
 			.from(`habits:user_id=eq.${userID}`)
 			.on('*', (payload) => {
-				updateHabitUI(payload.new);
+				console.log('change', payload);
+				console.log(loading);
+				updateHabitUI(updateTimeline(payload.new));
 			})
 			.subscribe();
 		
@@ -81,6 +83,20 @@
 		return newGoal;
 	}
 
+	function updateTimeline(habit){
+
+			let threshold = new Date();
+			threshold.setHours(0,0,0,0);
+			threshold.setDate(threshold.getDate() - habit.goal)
+			let filteredTimeline = habit.timeline.filter(event => {
+				let eventDate = new Date(event.created_at)
+				eventDate.setHours(0,0,0,0)
+				return eventDate > threshold;
+			})
+			return {...habit, goalProgress: filteredTimeline.length}
+
+	}
+
 	async function updateHabitsData() {
 		loading = true;
 		let {
@@ -93,16 +109,9 @@
 			.eq('user_id', $user.id);
 
 		habits = Habits.map(habit => {
-			let threshold = new Date();
-			threshold.setHours(0,0,0,0);
-			threshold.setDate(threshold.getDate() - habit.goal)
-			let filteredTimeline = habit.timeline.filter(event => {
-				let eventDate = new Date(event.created_at)
-				eventDate.setHours(0,0,0,0)
-				return eventDate > threshold;
-			})
-			return {...habit, goalProgress: filteredTimeline.length}
+			return updateTimeline(habit)
 		})
+		
 		loading = false;
 		habitStore.set(habits);
 	}
@@ -147,21 +156,20 @@
 	}
 
 	function updateHabitUI(newHabit) {
-		if (!loading) {
 			let found = false;
 			habits = habits.map((habit) => {
 				if (newHabit.id !== habit.id) {
 					return { ...habit };
 				} else {
 					found = true;
-					return { ...newHabit };
+					return { ...newHabit, timeline: habit.timeline };
 				}
 			});
+			console.log(habits);
 			habitStore.set(habits);
 			if (!found) {
 				habits = [...habits, { ...newHabit }];
 			}
-		}
 	}
 	async function completeHabit(habit) {
 		if (!loading) {
@@ -214,7 +222,6 @@
 				dispatch('addXp', {xp: -xp, event: habit.name});
 			}
 
-			await updateHabitsData();
 			loading = false;
 		}
 	}
@@ -231,7 +238,7 @@
 <div class="content-container">
 	<h1>Habits</h1>
 	{#if habits}
-	{#each habits as habit}
+	{#each habits as habit(habit.id)}
 		<div class="card">
 			<h2>{habit.name}</h2>
 			{#if habit.is_complete}

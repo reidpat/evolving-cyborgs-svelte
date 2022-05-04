@@ -134,7 +134,6 @@
 				eventDate.setHours(0,0,0,0)
 				return eventDate > threshold;
 			})
-			console.log('filtered', filteredTimeline);
 			return {...habit, goalProgress: filteredTimeline.length, goal: getNewHabitGoal(filteredTimeline.length, habit.goal)}
 
 	}
@@ -316,7 +315,7 @@
 		<Loading withOverlay={false} small />
 	{/if}
 	<div class="add-button">
-	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16} />
+	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}>Add New Vice</Button>
 	</div>
 	<Modal
 		bind:open

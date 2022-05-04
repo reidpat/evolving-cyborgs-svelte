@@ -6,10 +6,12 @@
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
 	import Reset16 from 'carbon-icons-svelte/lib/Reset16';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
+	import SveltyPicker from 'svelty-picker';
 	const dispatch = createEventbusDispatcher();
 
 	let newViceName = '';
 	let open = false;
+	let resetOpen = false;
 
 	let vices = [];
 	let loading = false;
@@ -25,15 +27,16 @@
 		const vicesSubscription = supabase
 			.from(`vices:user_id=eq.${userID}`)
 			.on('*', (payload) => {
-				updateVicesUI(payload.new);
+				if (!loading) {
+					updateVicesUI(payload.new);
+				}
 			})
 			.subscribe();
-		
-		
+
 		await updateVicesData();
 	});
 
-	function updateVicesUI(newVice) {
+	function updateVicesUI(newVice, timeline) {
 		console.log(newVice);
 		if (!loading) {
 			let found = false;
@@ -42,6 +45,11 @@
 					return { ...updateVice({ ...vice, timeline: vice.timeline }) };
 				} else {
 					found = true;
+					//console.log('ui update', newVice, [timeline, ...vice.timeline]);
+					if (timeline) {
+						console.log('ui update', newVice, [timeline, ...vice.timeline]);
+						return { ...updateVice({ ...newVice, timeline: [...vice.timeline, timeline] }) };
+					}
 					return { ...updateVice({ ...newVice, timeline: vice.timeline }) };
 				}
 			});
@@ -56,34 +64,28 @@
 		loading = true;
 		let Vices = $viceStore;
 		if (!$viceStore) {
-			let {
-				data,
-				error,
-				status
-			} = await supabase
+			let { data, error, status } = await supabase
 				.from('vices')
 				.select(`id, created_at, best, last_award, total,name, timeline(id, created_at)`)
 				.eq('user_id', $user.id);
 			Vices = data;
 		}
-			vices = Vices.map((vice) => {
-				return updateVice(vice);
-			});
-			viceStore.set(vices);
+		vices = Vices.map((vice) => {
+			return updateVice(vice);
+		});
+		viceStore.set(vices);
 		loading = false;
 	}
 
 	async function awardXp(days, last, vice) {
-		
 		let xp = (days - last) * 100;
-		console.log("xp", xp);
+		console.log('xp', xp);
 		dispatch('addXp', { xp: xp, event: vice.name });
 
 		const { data, error } = await supabase
 			.from('vices')
 			.update({ last_award: days })
 			.eq('user_id', $user.id);
-
 	}
 
 	function updateVice(vice) {
@@ -124,16 +126,22 @@
 		return { days, hours, minutes };
 	};
 
-	async function resetVice(vice) {
+	async function resetVice(vice, dateTime) {
+		console.log(dateTime);
+
 		let newVice = { ...vice };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
-		let now = new Date();
-		let currentSeconds = now - last;
+		let reset = new Date(dateTime);
+		if(last > reset){
+			console.log("cannot select a date that is before a previous reset")
+			return;
+		}
+		let currentSeconds = reset - last;
 		if (currentSeconds > newVice.best) {
 			newVice.best = currentSeconds;
 		}
 		newVice.total += currentSeconds;
-		newVice.currentSeconds = 0;
+		newVice.currentSeconds = new Date() - reset;
 
 		newVice.current_ui = parseSecondsToDHM(newVice.currentSeconds);
 		newVice.best_ui = parseSecondsToDHM(newVice.best);
@@ -147,17 +155,21 @@
 
 		const { data: timeline } = await supabase
 			.from('timeline')
-			.insert([{ user_id: $user.id, vice: newVice.id }]);
+			.insert([{ user_id: $user.id, vice: newVice.id , created_at: reset}]);
 
-		const { data, error } = await supabase
+		const { data: returnedVice, error } = await supabase
 			.from('vices')
-			.update({ best: newVice.best, total: newVice.total, last_award: 0})
+			.update({ best: newVice.best, total: newVice.total, last_award: 0 })
 			.eq('id', newVice.id);
+
+		console.log(returnedVice[0], timeline[0]);
+
+		updateViceUI(returnedVice[0], timeline[0]);
 
 		loading = false;
 	}
 
-	function updateViceUI(newVice) {
+	function updateViceUI(newVice, timeline) {
 		if (!loading) {
 			let found = false;
 			vices = vices.map((vice) => {
@@ -165,6 +177,9 @@
 					return { ...vice };
 				} else {
 					found = true;
+					if (timeline) {
+						return updateVice({ ...newVice, timeline: [...vice.timeline, timeline] });
+					}
 					return { ...newVice };
 				}
 			});
@@ -185,6 +200,9 @@
 
 		newViceName = '';
 	}
+
+	let myDate = null;
+	let currentVice = null;
 </script>
 
 <h1>Vices</h1>
@@ -195,10 +213,41 @@
 		<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
 		<p>Num: {vice.num}</p>
 		<p>Current: {vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</p>
-		<Button on:click={() => resetVice(vice)} iconDescription="Reset" icon={Reset16}>Reset</Button>
+		<Button
+			on:click={() => {
+				resetOpen = true;
+				currentVice = vice;
+			}}
+			iconDescription="New Vice"
+			icon={Reset16}
+		>Reset Vice</Button>
 	</div>
 {/each}
-<Button on:click={() => (open = true)} iconDescription="New Vice" icon={Add16} />
+<div class="add-button">
+	<Button on:click={() => (open = true)} iconDescription="New Vice" icon={Add16}>Add New Vice</Button>
+</div>
+<Modal
+	bind:open={resetOpen}
+	size="xs"
+	modalHeading="Set date and time"
+	primaryButtonText="Confirm"
+	secondaryButtonText="Cancel"
+	on:click:button--secondary={() => (resetOpen = false)}
+	on:open
+	on:close
+	on:click:button--primary={() => {
+		resetOpen = false;
+		resetVice(currentVice, myDate);
+		myDate = null;
+		currentVice = null;
+	}}
+>
+	{#if currentVice}
+		<p>Resetting the vice {currentVice.name}</p>
+	{/if}
+
+	<SveltyPicker inputClasses="form-control"  format="yyyy-mm-dd hh:ii" bind:value={myDate} />
+</Modal>
 <Modal
 	bind:open
 	size="xs"
@@ -215,3 +264,14 @@
 >
 	<input bind:value={newViceName} />
 </Modal>
+
+<style>
+	h1 {
+		text-align: center;
+	}
+	.add-button {
+		margin-left: auto;
+		display: flex;
+		justify-content: center;
+	}
+</style>

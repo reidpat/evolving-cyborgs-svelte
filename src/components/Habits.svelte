@@ -315,7 +315,7 @@
 		<Loading withOverlay={false} small />
 	{/if}
 	<div class="add-button">
-	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}>Add New Vice</Button>
+	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}>Add New Habit</Button>
 	</div>
 	<Modal
 		bind:open

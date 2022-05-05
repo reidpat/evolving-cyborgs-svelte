@@ -23,6 +23,7 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
 	import { onMount } from 'svelte';
+	import { Button, Modal } from "carbon-components-svelte";
 
 	export let sessionInfo;
 
@@ -67,6 +68,7 @@
 			xp -= next_level_xp;
 			level++;
 			next_level_xp = Math.round(level ** 1.5 + level * 9) * 10;
+			levelUp()
 		}
 
 		if (xp < 0) {
@@ -82,6 +84,11 @@
 			.update({ xp, level, next_level_xp })
 			.eq('id', $user.id);
 	}
+
+	let open = false;
+	function levelUp(){
+		open = true;
+	}
 </script>
 
 <SvelteToast />
@@ -92,6 +99,12 @@
 			<slot />
 		{/if}
 	</Eventbus>
+	<Modal passiveModal bind:open modalHeading="Level Up" on:open on:close>
+		<p>
+		  Congratulations, you have now leveled up to {$profileStore.level}.
+		  Keep up the great work!
+		</p>
+	</Modal>
 </div>
 {#if $user}
 	<BottomNav />

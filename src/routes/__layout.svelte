@@ -1,17 +1,16 @@
 <script context="module">
-	export async function load({session, context }) {
+	export async function load({ session, context }) {
 		let sessionInfo;
-		if(session.session){
+		if (session.session) {
 			sessionInfo = JSON.parse(session.session);
 		}
-    return {
-		props: {
-			sessionInfo,
-		}
+		return {
+			props: {
+				sessionInfo
+			}
+		};
 	}
-  } 
 </script>
-
 
 <script>
 	import User from '../components/User.svelte';
@@ -23,34 +22,30 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
 	import { onMount } from 'svelte';
-	import { Button, Modal } from "carbon-components-svelte";
+	import { Button, Modal } from 'carbon-components-svelte';
 
 	export let sessionInfo;
 
-
 	onMount(async () => {
-		if(sessionInfo){
-		const response = await fetch('/signin', {
+		if (sessionInfo) {
+			const response = await fetch('/signin', {
 				method: 'get',
-				headers:{
-					"token": JSON.stringify(sessionInfo.access_token),
-				} 
+				headers: {
+					token: JSON.stringify(sessionInfo.access_token)
+				}
 			});
 		}
-		if(!$user){
+		if (!$user) {
 			user.set(supabase.auth.user());
 		}
 	});
 
-
-
 	supabase.auth.onAuthStateChange(async (event, session) => {
-		
 		if (event === 'SIGNED_IN') {
 			console.log(session.user.email);
 			const response = await fetch('/signin', {
 				method: 'post',
-				body: JSON.stringify(session),
+				body: JSON.stringify(session)
 			});
 			console.log(response);
 		}
@@ -68,7 +63,7 @@
 			xp -= next_level_xp;
 			level++;
 			next_level_xp = Math.round(level ** 1.5 + level * 9) * 10;
-			levelUp()
+			open = true;
 		}
 
 		if (xp < 0) {
@@ -86,26 +81,38 @@
 	}
 
 	let open = false;
-	function levelUp(){
-		open = true;
+	let habitOpen = false;
+	let habitGoalInfo = {};
+	function habitGoal(event) {
+		habitOpen = true;
+		console.log(event.detail);
+		habitGoalInfo = {...event.detail}
+		addXp({detail: {xp: habitGoalInfo.progress * 100, event: `reaching your goal of ${habitGoalInfo.goal} days on habit ${habitGoalInfo.name}`}})
 	}
 </script>
 
 <SvelteToast />
 <User />
+{#if $user}
 <div class="content-container">
-	<Eventbus on:addXp={addXp}>
+	<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>
 		{#if $user}
 			<slot />
 		{/if}
 	</Eventbus>
 	<Modal passiveModal bind:open modalHeading="Level Up" on:open on:close>
 		<p>
-		  Congratulations, you have now leveled up to {$profileStore.level}.
-		  Keep up the great work!
+			Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
 		</p>
 	</Modal>
+	<Modal passiveModal bind:open={habitOpen} modalHeading="Goooaaaaaal!" on:open on:close>
+		{#if habitGoalInfo}
+			<p>
+				You just hit your goal of {habitGoalInfo.progress} days on {habitGoalInfo.name} and earned an
+				extra {habitGoalInfo.progress * 100} xp. Do you think you can keep it up and hit your next goal of {habitGoalInfo.goal} days?
+			</p>
+		{/if}
+	</Modal>
 </div>
-{#if $user}
 	<BottomNav />
 {/if}

@@ -67,6 +67,8 @@
 		margin: auto;
 	}
 	.outer-nav {
+		position: fixed;
+		top:0px;
 		width: 100%;
 		margin: auto;
 		background-color: #1d1c1f;

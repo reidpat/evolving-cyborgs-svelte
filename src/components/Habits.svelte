@@ -4,13 +4,13 @@
 	import { supabase } from '../supabaseClient';
 	import { Button, Modal, Loading } from 'carbon-components-svelte';
 	import Add16 from 'carbon-icons-svelte/lib/Add16';
-	import {createEventbusDispatcher} from 'svelte-eventbus';
-    const dispatch = createEventbusDispatcher();
+	import { createEventbusDispatcher } from 'svelte-eventbus';
+	const dispatch = createEventbusDispatcher();
 
 	let habits = [];
 
 	$: {
-		if($habitStore){
+		if ($habitStore) {
 			habits = [...$habitStore];
 		}
 	}
@@ -22,7 +22,7 @@
 	let shouldUpdateHabits = true;
 
 	onMount(async () => {
-		if($habitStore){
+		if ($habitStore) {
 			habits = [...$habitStore];
 		}
 
@@ -31,15 +31,15 @@
 		const habitsSubscription = supabase
 			.from(`habits:user_id=eq.${userID}`)
 			.on('*', (payload) => {
-				console.log('change', payload);
 				let newHabit = matchHabit(payload.new);
-				console.log(newHabit);
-				//setTimeout(updateHabitUI(newHabit), 1000);
+				if(!loading){
+					updateHabitUI(newHabit);
+				}
 				//updateHabitsData();
 			})
 			.subscribe();
-		
-		if(!$habitStore){
+
+		if (!$habitStore) {
 			await updateHabitsData();
 		}
 
@@ -53,89 +53,91 @@
 		await resetHabits();
 	});
 
-	
 	//Given a habit, find the matching one in the store already and mesh the new one with the old timeline.
-	function matchHabit(newHabit){
+	function matchHabit(newHabit) {
 		let mergedHabit = null;
-		habits.forEach(habit => {
-			if(habit.id == newHabit.id){
-				mergedHabit = {...newHabit, timeline: habit.timeline}
+		habits.forEach((habit) => {
+			if (habit.id == newHabit.id) {
+				mergedHabit = { ...newHabit, timeline: habit.timeline };
 			}
-		})
+		});
 
 		return mergedHabit;
 	}
 
-	function matchHabitList(habits, newHabit, newTimeline){
+	function matchHabitList(habits, newHabit, newTimeline) {
 		let found = false;
 		habits = habits.map((habit) => {
-				if (newHabit.id !== habit.id) {
-					return { ...habit };
-				} else {
-					found = true;
-					if(newTimeline){
-						return updateTimeline({...newHabit, timeline: newTimeline});
-					}
-					return updateTimeline({...newHabit, timeline: habit.timeline});
+			if (newHabit.id !== habit.id) {
+				return { ...habit };
+			} else {
+				found = true;
+				if (newTimeline) {
+					return updateTimeline({ ...newHabit, timeline: newTimeline });
 				}
-			});
-			if (!found) {
-				habits = [...habits, { ...newHabit }];
+				return updateTimeline({ ...newHabit, timeline: habit.timeline });
 			}
+		});
+		if (!found) {
+			habits = [...habits, { ...newHabit }];
+		}
 		return habits;
 	}
 
 	function updateHabitUI(newHabit, timeline) {
-			console.log('timeline', timeline);
-			habits = matchHabitList(habits, newHabit, timeline);
-			console.log('ui update', habits);
-			habitStore.set(habits);
+		habits = matchHabitList(habits, newHabit, timeline);
+		habitStore.set(habits);
 	}
 
 	//taking in current progress and goal and returning what the new goal should be
 	//3, 5, 10, 15, 20, 30, ...
-	function getNewHabitGoal(progress, goal){
+	function getNewHabitGoal(progress, goal, name) {
 		let newGoal = goal;
-		let goalArray = [3,5,10,15,20]
-		let goalIndex = goalArray.findIndex(e => e == goal);
+		let goalArray = [3, 5, 10, 15, 20];
+		let goalIndex = goalArray.findIndex((e) => e == goal);
 		//find index of current goal
 
 		//increases goal if progress is greater than current goal
-		if(progress => goal){
-			if(goalIndex == goalArray.length - 1 || goalIndex == -1){
+		if (progress >= goal) {
+			if (goalIndex == goalArray.length - 1 || goalIndex == -1) {
 				newGoal = goal + 10;
+				//dispatch('habitGoal', { goal, name, progress });
+			} else {
+				newGoal = goalArray[goalIndex + 1];
+				//dispatch('habitGoal', { goal, name, progress });
 			}
-			else{
-				newGoal = goalArray[goalIndex + 1]
-			}
+				if(!loading){
+					dispatch('habitGoal', { goal: newGoal, name, progress });
+				}
 		}
+
 		// lowers the goal if progress falls below previous goal
-		if(progress < goal){
-			let nextGoal = goalArray[goalArray.findIndex(e => e > progress)];
-			if(nextGoal != -1){
+		if (progress < goal) {
+			let nextGoal = goalArray[goalArray.findIndex((e) => e > progress)];
+			if (nextGoal != -1) {
 				newGoal = nextGoal;
+			} else {
+				newGoal = (goal % 10) * 10 + 10;
 			}
-			else {
-				newGoal = goal % 10 * 10 + 10;
-			}
-			
 		}
 
 		return newGoal;
 	}
 
-	function updateTimeline(habit){
-
-			let threshold = new Date();
-			threshold.setHours(0,0,0,0);
-			threshold.setDate(threshold.getDate() - habit.goal)
-			let filteredTimeline = habit.timeline.filter(event => {
-				let eventDate = new Date(event.created_at)
-				eventDate.setHours(0,0,0,0)
-				return eventDate > threshold;
-			})
-			return {...habit, goalProgress: filteredTimeline.length, goal: getNewHabitGoal(filteredTimeline.length, habit.goal)}
-
+	function updateTimeline(habit) {
+		let threshold = new Date();
+		threshold.setHours(0, 0, 0, 0);
+		threshold.setDate(threshold.getDate() - habit.goal);
+		let filteredTimeline = habit.timeline.filter((event) => {
+			let eventDate = new Date(event.created_at);
+			eventDate.setHours(0, 0, 0, 0);
+			return eventDate > threshold;
+		});
+		return {
+			...habit,
+			goalProgress: filteredTimeline.length,
+			goal: getNewHabitGoal(filteredTimeline.length, habit.goal, habit.name)
+		};
 	}
 
 	async function updateHabitsData() {
@@ -146,13 +148,15 @@
 			status
 		} = await supabase
 			.from('habits')
-			.select(`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded)`)
+			.select(
+				`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded)`
+			)
 			.eq('user_id', $user.id);
 
-		habits = Habits.map(habit => {
-			return updateTimeline(habit)
-		})
-		
+		habits = Habits.map((habit) => {
+			return updateTimeline(habit);
+		});
+
 		loading = false;
 		habitStore.set(habits);
 	}
@@ -173,20 +177,17 @@
 					day2.setDate(date.getDate() + 2);
 
 					let now = new Date();
-					now.setHours(0,0,0,0);
-					
+					now.setHours(0, 0, 0, 0);
 
-					if (now.getTime() >= day2.getTime()){
-						newHabit = {...newHabit, streak: 0, is_complete: false}
-
-					}
-					else if (now.getTime() >= day1.getTime()){
-						newHabit = {...newHabit, is_complete: false}
+					if (now.getTime() >= day2.getTime()) {
+						newHabit = { ...newHabit, streak: 0, is_complete: false };
+					} else if (now.getTime() >= day1.getTime()) {
+						newHabit = { ...newHabit, is_complete: false };
 					}
 
 					const { data: habit_update } = supabase
 						.from('habits')
-						.update({...newHabit})
+						.update({ ...newHabit })
 						.eq('id', habit.id);
 				}
 
@@ -196,23 +197,26 @@
 		}
 	}
 
-	
 	async function completeHabit(habit) {
 		if (!loading) {
 			let streak;
 			let goalProgress;
-			if(habit.is_complete){
+			if (habit.is_complete) {
 				streak = habit.streak - 1;
 				goalProgress = habit.goalProgress - 1;
-			}
-			else {
+			} else {
 				streak = habit.streak + 1;
 				goalProgress = habit.goalProgress + 1;
 			}
-			let newGoal = getNewHabitGoal(goalProgress, habit.goal);
-			let newHabit = { ...habit, is_complete: !habit.is_complete, streak, goalProgress, goal: newGoal};
+			let newGoal = getNewHabitGoal(goalProgress, habit.goal, habit.name);
+			let newHabit = {
+				...habit,
+				is_complete: !habit.is_complete,
+				streak,
+				goalProgress,
+				goal: newGoal
+			};
 
-			
 			loading = true;
 
 			updateHabitUI(newHabit);
@@ -220,8 +224,8 @@
 			if (newHabit.is_complete) {
 				//add to timeline
 
-				let xp = (newHabit.streak + habit.goalProgress) * 10
-				dispatch('addXp', {xp: xp, event: habit.name});
+				let xp = (newHabit.streak + habit.goalProgress) * 100;
+				dispatch('addXp', { xp: xp, event: habit.name });
 
 				// updateHabitUI(newHabit, [{
 				// 	created_at: new Date(),
@@ -230,47 +234,37 @@
 
 				const { data: timeline, error } = await supabase
 					.from('timeline')
-					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: xp}]);
+					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: xp }]);
 
-				
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete, streak, goal: newHabit.goal})
+					.update({ is_complete: newHabit.is_complete, streak, goal: newHabit.goal })
 					.eq('id', habit.id);
 
-				updateHabitUI(habit_update[0], [...newHabit.timeline, timeline[0]]);
-				
 
-				
+				updateHabitUI(habit_update[0], [...newHabit.timeline, timeline[0]]);
 			} else {
 				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
-				dispatch('addXp', {xp: -xp, event: habit.name});
+				dispatch('addXp', { xp: -xp, event: habit.name });
 
 				if (habit.timeline && habit.timeline.length > 0) {
-					console.log('deleting timeline:', newHabit.timeline[newHabit.timeline.length - 1]);
 					const { data: timeline_update, error } = await supabase
 						.from('timeline')
 						.delete()
 						.eq('id', newHabit.timeline[newHabit.timeline.length - 1].id);
 
-					if(error){
-					console.log('delete-error', error);
+					if (error) {
+						console.log('delete-error', error);
+					}
 				}
-
-				}
-
-
 
 				let timeline = [...newHabit.timeline].slice(0, newHabit.timeline.length - 1);
 				updateHabitUI(newHabit, timeline);
 
 				const { data: habit_update } = await supabase
 					.from('habits')
-					.update({ is_complete: newHabit.is_complete, streak,  goal: newHabit.goal})
+					.update({ is_complete: newHabit.is_complete, streak, goal: newHabit.goal })
 					.eq('id', habit.id);
-				
-
-				
 			}
 
 			loading = false;
@@ -289,33 +283,35 @@
 <div class="content-container">
 	<h1>Habits</h1>
 	{#if habits}
-	{#each habits as habit(habit.id)}
-		<div class="card">
-			<h2>{habit.name}</h2>
-			{#if habit.is_complete}
-				<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
-					check_box
-				</span>
-			{:else}
-				<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
-					check_box_outline_blank
-				</span>
-			{/if}
-			<p>Streak: {habit.streak}</p>
-			
-			{#if habit.timeline && habit.timeline.length > 0}
-			<p>Goal: {habit.goalProgress}/{habit.goal}</p>
-			{:else if !loading}
-				<p>Never Completed</p>
-			{/if}
-		</div>
-	{/each}
+		{#each habits as habit (habit.id)}
+			<div class="card">
+				<h2>{habit.name}</h2>
+				{#if habit.is_complete}
+					<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
+						check_box
+					</span>
+				{:else}
+					<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
+						check_box_outline_blank
+					</span>
+				{/if}
+				<p>Streak: {habit.streak}</p>
+
+				{#if habit.timeline && habit.timeline.length > 0}
+					<p>Goal: {habit.goalProgress}/{habit.goal}</p>
+				{:else if !loading}
+					<p>Never Completed</p>
+				{/if}
+			</div>
+		{/each}
 	{/if}
 	{#if loading}
 		<Loading withOverlay={false} small />
 	{/if}
 	<div class="add-button">
-	<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}>Add New Habit</Button>
+		<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}
+			>Add New Habit</Button
+		>
 	</div>
 	<Modal
 		bind:open
@@ -339,7 +335,7 @@
 	h1 {
 		text-align: center;
 	}
-	.add-button{
+	.add-button {
 		margin-left: auto;
 		display: flex;
 		justify-content: center;

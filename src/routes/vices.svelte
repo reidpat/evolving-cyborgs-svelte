@@ -81,7 +81,7 @@
 		let xp = 0;
 		let difference = (days - last);
 		for(let i = 1; i == difference; i++){
-			xp += 100 * i;
+			xp += 100 + i;
 		}
 		console.log('xp', xp);
 		dispatch('addXp', { xp: xp, event: vice.name });

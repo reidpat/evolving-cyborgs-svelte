@@ -125,6 +125,17 @@
 	}
 
 	function updateTimeline(habit) {
+		if(habit.timeline.length > 1){
+			habit.timeline.sort((a,b) => {
+				let dateA = new Date(a.created_at);
+				let dateB = new Date(b.created_at);
+				return dateB - dateA
+			})
+		}
+		//console.log(habit.name);
+		// let streak = calculateStreak(habit.timeline);
+		// console.log(streak);
+
 		let threshold = new Date();
 		threshold.setHours(0, 0, 0, 0);
 		threshold.setDate(threshold.getDate() - habit.goal);
@@ -161,34 +172,55 @@
 		habitStore.set(habits);
 	}
 
+	function calculateStreak(timeline){
+		let prevDate = new Date();
+		let streak = 0;
+		for(let i = 0; i < timeline.length; i++){
+			let currDate = new Date(timeline[i].created_at);
+			let dateGap = getDayGapInDates(prevDate, currDate)
+			console.log('prev', prevDate, 'curr', currDate, 'gap', dateGap)
+			if(dateGap == 1){
+				streak++;
+			}
+			else if (dateGap != 0){
+				break
+			}
+			else {
+				if (i == 0){
+					streak++;
+				}
+			}
+			prevDate = currDate;
+		}
+		return streak;
+	}
+
 	async function resetHabits() {
 		if (habits && shouldUpdateHabits) {
 			habits = habits.map((habit) => {
 				let newHabit = habit;
 				let timeline = habit.timeline;
+				
 				if (timeline.length > 0) {
+					
 					let date = new Date(timeline[timeline.length - 1].created_at);
-					let day1 = new Date(date);
-					day1.setHours(0, 0, 0, 0);
-					day1.setDate(date.getDate() + 1);
+					let gapInDates = getDayGapInDates(date, new Date());
 
-					let day2 = new Date(date);
-					day2.setHours(0, 0, 0, 0);
-					day2.setDate(date.getDate() + 2);
-
-					let now = new Date();
-					now.setHours(0, 0, 0, 0);
-
-					if (now.getTime() >= day2.getTime()) {
-						newHabit = { ...newHabit, streak: 0, is_complete: false };
-					} else if (now.getTime() >= day1.getTime()) {
+					if (gapInDates >= 2) {
 						newHabit = { ...newHabit, is_complete: false };
+					} else if (gapInDates == 1) {
+						newHabit = { ...newHabit, is_complete: false };
+					}else if (gapInDates == 0){
+						newHabit.is_complete = true;
 					}
-
+					console.log(habit.name);
+					newHabit.streak = calculateStreak(newHabit.timeline);
 					const { data: habit_update } = supabase
 						.from('habits')
 						.update({ ...newHabit })
 						.eq('id', habit.id);
+				}else{
+					newHabit.streak = timeline.length;
 				}
 
 				return { ...newHabit };
@@ -197,8 +229,16 @@
 		}
 	}
 
+	function getDayGapInDates(date1, date2) {
+		date1.setHours(0, 0, 0, 0);
+		date2.setHours(0, 0, 0, 0);
+		let differenceInSecs = Math.abs(date2 - date1);
+		let differenceInDays = differenceInSecs / (1000 * 3600 * 24);
+		return differenceInDays;
+	}
+
 	async function completeHabit(habit) {
-		if (!loading) {
+		if (!loading && !(habit.is_complete && habit.timeline.length > 1 && getDayGapInDates(new Date(), new Date(habit.timeline[habit.timeline.length - 1])) == 0)) {
 			let streak;
 			let goalProgress;
 			if (habit.is_complete) {
@@ -224,7 +264,7 @@
 			if (newHabit.is_complete) {
 				//add to timeline
 
-				let xp = (newHabit.streak + habit.goalProgress) * 100;
+				let xp = (newHabit.streak + newHabit.goalProgress) * 100;
 				dispatch('addXp', { xp: xp, event: habit.name });
 
 				// updateHabitUI(newHabit, [{

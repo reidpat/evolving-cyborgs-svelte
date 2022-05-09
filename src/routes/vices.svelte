@@ -37,7 +37,6 @@
 	});
 
 	function updateVicesUI(newVice, timeline) {
-		console.log(newVice);
 		if (!loading) {
 			let found = false;
 			vices = vices.map((vice) => {
@@ -45,9 +44,7 @@
 					return { ...updateVice({ ...vice, timeline: vice.timeline }) };
 				} else {
 					found = true;
-					//console.log('ui update', newVice, [timeline, ...vice.timeline]);
 					if (timeline) {
-						console.log('ui update', newVice, [timeline, ...vice.timeline]);
 						return { ...updateVice({ ...newVice, timeline: [...vice.timeline, timeline] }) };
 					}
 					return { ...updateVice({ ...newVice, timeline: vice.timeline }) };
@@ -80,11 +77,9 @@
 	async function awardXp(days, last, vice) {
 		let xp = 0;
 		let difference = days - last;
-		console.log(difference);
 		for (let i = last; i <= days; i++) {
 			xp += 100 + i * 10;
 		}
-		console.log('xp', xp);
 		dispatch('addXp', { xp: xp, event: vice.name });
 
 		const { data, error } = await supabase
@@ -104,17 +99,9 @@
 			});
 		}
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
-		console.log('last', last);
 		let now = new Date();
-		console.log('now', now);
 		let currentSeconds = now - last;
 		let current = parseSecondsToDHM(currentSeconds);
-		console.log(current);
-		if (current.days > vice.last_award) {
-			// console.log(current.days - vice.last_award);
-			// awardXp(current.days, vice.last_award, vice);
-			// vice.last_award = current.days;
-		}
 
 		if (currentSeconds > vice.best) {
 			vice.best = currentSeconds;
@@ -144,7 +131,6 @@
 	};
 
 	async function resetVice(vice, dateTime) {
-		console.log(dateTime);
 
 		let newVice = { ...vice, last_award: 0 };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
@@ -227,17 +213,44 @@
 	{#each vices as vice}
 		<div class="card bg-base-100 shadow-xl card-compact">
 			<div class="card-body">
-				<h2 class="card-title">{vice.name}</h2>
+				<h2 class="text-4xl text-center">{vice.name}</h2>
 				<div tabindex="0" class="collapse collapse-arrow">
 					<div class="collapse-title text-xl font-medium">
+						<div class="stats shadow">
+  
+							<div class="stat">
+							  <!-- <div class="stat-title">Total Page Views</div> -->
+							  <div class="stat-value">{vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</div>
+							  <div class="stat-desc">Current Streak</div>
+							</div>
+							
+						  </div>
 						<p class="font-semibold">
-							{vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m
+							
 						</p>
 					</div>
 					<div class="collapse-content">
-						<p>Best: {vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</p>
-						<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
-						<p>Resets: {vice.num}</p>
+						<div class="stats stats-vertical lg:stats-horizontal shadow">
+  
+							<div class="stat">
+							  <div class="stat-title">Best</div>
+							  <div class="stat-value">{vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</div>
+							  <div class="stat-desc">All time record</div>
+							</div>
+							
+							<div class="stat">
+							  <div class="stat-title">Total</div>
+							  <div class="stat-value">{vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</div>
+							  <div class="stat-desc">Amount of time avoided</div>
+							</div>
+							
+							<div class="stat">
+							  <div class="stat-title">Resets</div>
+							  <div class="stat-value">{vice.num}</div>
+							  <div class="stat-desc">Total times vice reset</div>
+							</div>
+							
+						  </div>
 					</div>
 				</div>
 				<div class="card-actions justify-between">

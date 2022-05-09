@@ -3,7 +3,7 @@
 	import { habitStore, user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
-	import { ProgressBar } from 'carbon-components-svelte';
+	import AnimatedProgress from './AnimatedProgress.svelte';
 	const dispatch = createEventbusDispatcher();
 
 	let habits = [];
@@ -350,11 +350,7 @@
 						</div>
 					</div>
 
-					<ProgressBar
-						class="progress progress-accent mt-2"
-						value={habit.goalProgress}
-						max={habit.goal}
-					/>
+					<AnimatedProgress classColor="progress-accent" bind:value={habit.goalProgress} bind:max={habit.goal} />
 					<p class="goal-info">Goal: {habit.goalProgress}/{habit.goal}</p>
 				</div>
 			</div>
@@ -441,5 +437,8 @@
 	}
 	.checkbox span {
 		font-size: 50px;
+	}
+	progress{
+		width: 100%;
 	}
 </style>

@@ -112,7 +112,7 @@
 					Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
 				</p>
 				<div class="modal-action">
-					<label for="my-modal-6" on:click={() => open = false} class="btn">Yay!</label>
+					<label for="my-modal-6" on:click={() => (open = false)} class="btn">Yay!</label>
 				</div>
 			</div>
 		</div>
@@ -126,10 +126,16 @@
 					</p>
 				{/if}
 				<div class="modal-action">
-					<label for="my-modal-7" on:click={() => {habitOpen = false}} class="btn">You Bet!</label>
+					<label
+						for="my-modal-7"
+						on:click={() => {
+							habitOpen = false;
+						}}
+						class="btn">You Bet!</label
+					>
 				</div>
 			</div>
 		</div>
 	</div>
-	<BottomNav />
 {/if}
+<BottomNav />

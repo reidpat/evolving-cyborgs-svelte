@@ -10,7 +10,7 @@ body{
     max-width: 1200px;
     margin: auto;
     min-width: 250px;
-    padding: 80px 30px;
+    padding: 100px 30px;
     height: 100%;
 }
 .card {
@@ -45,4 +45,7 @@ body,html{
 }
 .bx--modal-content{
     max-width: 80%;
+}
+.progress-value {
+    width: 100%;
 }

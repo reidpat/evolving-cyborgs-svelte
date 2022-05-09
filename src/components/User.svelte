@@ -3,24 +3,26 @@
 
 	import SignIn from './SignIn.svelte';
 	import SignOut from './SignOut.svelte';
-
+	import AnimatedProgress from './AnimatedProgress.svelte';
 	import { supabase } from '../supabaseClient';
 	import { ProgressBar } from 'carbon-components-svelte';
-	import { onMount } from 'svelte';
 
 	let profile;
 
 	$: profile = $profileStore;
 	$: {
-		if($user){
-			console.log("startup");
+		if ($user) {
+			console.log('startup');
 			startupLoad();
 		}
 	}
 
-	async function startupLoad(){
-		if(!$profileStore){
-			let { data: profiles, error } = await supabase.from('profiles').select('*').eq('id', $user.id);
+	async function startupLoad() {
+		if (!$profileStore) {
+			let { data: profiles, error } = await supabase
+				.from('profiles')
+				.select('*')
+				.eq('id', $user.id);
 			profileStore.set(profiles[0]);
 		}
 
@@ -36,18 +38,25 @@
 
 <div class="outer-nav">
 	<div class="inner-nav">
-		<h1>EC</h1>
-		<div class="xp-bar">
-			{#if $user}
-				<ProgressBar
+		{#if profile}
+			<p class="font-bold m-3 text-3xl">{profile.username[0]}</p>
+			<div class="xp-bar">
+				<p>Level: {profile.level} | XP: {profile.xp}/{profile.next_level_xp}</p>
+				<AnimatedProgress
+					classColor="progress-primary"
+					bind:value={profile.xp}
+					bind:max={profile.next_level_xp}
+				/>
+
+				<!-- <ProgressBar
 					id="xp_bar"
 					value={profile.xp}
 					max={profile.next_level_xp}
 					labelText={`Level: ${profile.level}`}
 					helperText={`${profile.xp}/${profile.next_level_xp} xp`}
-				/>
-			{/if}
-		</div>
+				/> -->
+			</div>
+		{/if}
 		<div>
 			{#if $user}
 				<SignOut />
@@ -68,16 +77,19 @@
 	}
 	.outer-nav {
 		position: fixed;
-		top:0px;
+		top: 0px;
 		width: 100%;
 		margin: auto;
-		background-color: #1d1c1f;
+		background-color: hsl(var(--b2));
 		color: #c4c2b9;
 		padding: 10px;
 		z-index: 4;
 	}
 	.xp-bar {
+		padding: 0px 20px;
 		flex: 1;
-		margin: 0px 20px;
+	}
+	p {
+		text-align: center;
 	}
 </style>

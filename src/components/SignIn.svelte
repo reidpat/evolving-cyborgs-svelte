@@ -12,4 +12,4 @@
 	}
 </script>
 
-<button class="btn btn-primary" on:click={signIn}>Login</button>
+<button class="btn btn-primary" on:click={signIn}>Sign In</button>

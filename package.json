@@ -33,6 +33,7 @@
   "type": "module",
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@okrad/svelte-progressbar": "^1.11.3",
     "@supabase/supabase-js": "^1.30.0",
     "cookie": "^0.5.0",
     "daisy": "^0.2.0",

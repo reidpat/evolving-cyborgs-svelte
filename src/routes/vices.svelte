@@ -51,7 +51,7 @@
 				}
 			});
 			if (!found) {
-				vices = [...vices, { ...newVice }];
+				vices = [...vices, ...updateVice({ ...newVice, timeline: [timeline] })];
 			}
 			viceStore.set(vices);
 		}
@@ -95,7 +95,7 @@
 			vice.timeline.sort((a, b) => {
 				let dateA = new Date(a.created_at);
 				let dateB = new Date(b.created_at);
-				return dateA - dateB
+				return dateA - dateB;
 			});
 		}
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
@@ -131,7 +131,6 @@
 	};
 
 	async function resetVice(vice, dateTime) {
-
 		let newVice = { ...vice, last_award: 0 };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
 		let reset = new Date(dateTime);
@@ -173,6 +172,7 @@
 	}
 
 	function updateViceUI(newVice, timeline) {
+		console.log(newVice, timeline);
 		if (!loading) {
 			let found = false;
 			vices = vices.map((vice) => {
@@ -187,12 +187,13 @@
 				}
 			});
 			if (!found) {
-				vices = [...vices, { ...newVice }];
+				vices = [...vices, updateVice({ ...newVice, timeline: [timeline] })];
 			}
 		}
 	}
 
 	async function newVice() {
+		loading = true;
 		const { data: vice, error } = await supabase
 			.from('vices')
 			.insert([{ name: newViceName, user_id: $user.id }]);
@@ -201,7 +202,9 @@
 			.from('timeline')
 			.insert([{ user_id: $user.id, vice: vice[0].id }]);
 
+		loading = false;
 		newViceName = '';
+		await updateViceUI(vice[0], timeline[0])
 	}
 
 	let myDate = null;
@@ -217,40 +220,40 @@
 				<div tabindex="0" class="collapse collapse-arrow">
 					<div class="collapse-title text-xl font-medium">
 						<div class="stats shadow">
-  
 							<div class="stat">
-							  <!-- <div class="stat-title">Total Page Views</div> -->
-							  <div class="stat-value">{vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</div>
-							  <div class="stat-desc">Current Streak</div>
+								<!-- <div class="stat-title">Total Page Views</div> -->
+								<div class="stat-value">
+									{vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m
+								</div>
+								<div class="stat-desc">Current Streak</div>
 							</div>
-							
-						  </div>
-						<p class="font-semibold">
-							
-						</p>
+						</div>
+						<p class="font-semibold" />
 					</div>
 					<div class="collapse-content">
 						<div class="stats stats-vertical lg:stats-horizontal shadow">
-  
 							<div class="stat">
-							  <div class="stat-title">Best</div>
-							  <div class="stat-value">{vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</div>
-							  <div class="stat-desc">All time record</div>
+								<div class="stat-title">Best</div>
+								<div class="stat-value">
+									{vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m
+								</div>
+								<div class="stat-desc">All time record</div>
 							</div>
-							
+
 							<div class="stat">
-							  <div class="stat-title">Total</div>
-							  <div class="stat-value">{vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</div>
-							  <div class="stat-desc">Amount of time avoided</div>
+								<div class="stat-title">Total</div>
+								<div class="stat-value">
+									{vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m
+								</div>
+								<div class="stat-desc">Amount of time avoided</div>
 							</div>
-							
+
 							<div class="stat">
-							  <div class="stat-title">Resets</div>
-							  <div class="stat-value">{vice.num}</div>
-							  <div class="stat-desc">Total times vice reset</div>
+								<div class="stat-title">Resets</div>
+								<div class="stat-value">{vice.num}</div>
+								<div class="stat-desc">Total times vice reset</div>
 							</div>
-							
-						  </div>
+						</div>
 					</div>
 				</div>
 				<div class="card-actions justify-between">
@@ -287,7 +290,77 @@
 	<div class="add-button">
 		<button class="btn btn-accent btn-outline" on:click={() => (open = true)}>Add New Vice</button>
 	</div>
-	<Modal
+	<div
+		class="modal modal-accent sm:modal-middle"
+		class:modal-open={resetOpen}
+		on:click|self={() => {
+			resetOpen = false;
+		}}
+	>
+		<div class="modal-box">
+			<label
+				for="my-modal-7"
+				class="btn btn-sm btn-circle absolute right-2 top-2"
+				on:click={() => {
+					resetOpen = false;
+				}}>✕</label
+			>
+			{#if currentVice}
+				<p class="card-title">Reset {currentVice.name}</p>
+			{/if}
+			
+			<SveltyPicker inputClasses="form-control input input-primary" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
+			<label>Choose date and time</label>
+			<div class="modal-action">
+				<button
+					on:click={() => {
+						resetVice(currentVice, myDate);
+						resetOpen = false;
+						myDate = null;
+					}}
+					class:btn-disabled="{myDate === null}"
+					class="btn btn-primary modal-button">Reset</button
+				>
+			</div>
+		</div>
+	</div>
+	<div
+		class="modal modal-accent sm:modal-middle"
+		class:modal-open={open}
+		on:click|self={() => {
+			open = false;
+		}}
+	>
+		<div class="modal-box">
+			<label
+				for="my-modal-7"
+				class="btn btn-sm btn-circle absolute right-2 top-2"
+				on:click={() => {
+					open = false;
+				}}>✕</label
+			>
+			<label for="habit-name" class="label">
+				<span class="label-text">New Vice Name</span>
+			</label>
+			<input
+				id="habit-name"
+				type="text"
+				placeholder="Type here"
+				class="input input-bordered input-primary w-full max-w-xs"
+				bind:value={newViceName}
+			/>
+			<div class="modal-action">
+				<button
+					on:click={() => {
+						newVice();
+						open = false;
+					}}
+					class="btn btn-primary modal-button">Create Vice</button
+				>
+			</div>
+		</div>
+	</div>
+	<!-- <Modal
 		bind:open={resetOpen}
 		size="xs"
 		modalHeading="Set date and time"
@@ -306,10 +379,8 @@
 		{#if currentVice}
 			<p>Resetting the vice {currentVice.name}</p>
 		{/if}
-
-		<SveltyPicker inputClasses="form-control" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
-	</Modal>
-	<Modal
+	</Modal> -->
+	<!-- <Modal
 		bind:open
 		size="xs"
 		modalHeading="New Vice Name"
@@ -324,7 +395,7 @@
 		}}
 	>
 		<input bind:value={newViceName} />
-	</Modal>
+	</Modal> -->
 </div>
 
 <style>

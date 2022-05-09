@@ -314,6 +314,7 @@
 			.insert([{ name: newHabitName, user_id: $user.id }]);
 
 		newHabitName = '';
+		updateHabitUI(data[0]);
 	}
 
 	let open = false;
@@ -387,6 +388,7 @@
 			<div class="modal-action">
 				<button
 					on:click={() => {
+						newHabit();
 						open = false;
 					}}
 					class="btn btn-primary modal-button">Create Habit</button

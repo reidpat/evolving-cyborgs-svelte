@@ -5,7 +5,7 @@ exports.handler = init({
 	assets: new Set(["cyborg.png","favicon.png","manifest.json","meditation_192.png","meditation_512.png","service-worker.js"]),
 	_: {
 		mime: {".png":"image/png",".json":"application/json"},
-		entry: {"file":"start-6ec77214.js","js":["start-6ec77214.js","chunks/index-d41602b9.js","chunks/index-ffc5a9d1.js"],"css":[]},
+		entry: {"file":"start-a07f1c08.js","js":["start-a07f1c08.js","chunks/index-d9cb6f28.js","chunks/index-339123f0.js"],"css":[]},
 		nodes: [
 			() => Promise.resolve().then(() => require('../server/nodes/0.js')),
 			() => Promise.resolve().then(() => require('../server/nodes/1.js')),

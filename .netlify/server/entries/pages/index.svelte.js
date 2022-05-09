@@ -20,69 +20,61 @@ __export(stdin_exports, {
   default: () => Routes
 });
 module.exports = __toCommonJS(stdin_exports);
-var import_index_d51717b2 = require("../../chunks/index-d51717b2.js");
-var import_lib_236980de = require("../../chunks/lib-236980de.js");
+var import_index_df821055 = require("../../chunks/index-df821055.js");
+var import_lib_9f96b971 = require("../../chunks/lib-9f96b971.js");
 var import_supabaseClient_51bc0a25 = require("../../chunks/supabaseClient-51bc0a25.js");
-var import_Add16_3d36ae4a = require("../../chunks/Add16-3d36ae4a.js");
+var import_ProgressBar_b583b79a = require("../../chunks/ProgressBar-b583b79a.js");
 var import_supabase_js = require("@supabase/supabase-js");
-const Habits = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+var Habits_svelte_svelte_type_style_lang = "";
+const css = {
+  code: "h1.svelte-ztyz41.svelte-ztyz41{text-align:center}.add-button.svelte-ztyz41.svelte-ztyz41{margin-left:auto;display:flex;justify-content:center}.goal-info.svelte-ztyz41.svelte-ztyz41{margin:auto;text-align:center}.habit-upper.svelte-ztyz41.svelte-ztyz41{display:flex;justify-content:space-between}.checkbox.svelte-ztyz41 span.svelte-ztyz41{font-size:50px}",
+  map: null
+};
+const Habits = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let $$unsubscribe_user;
   let $habitStore, $$unsubscribe_habitStore;
-  $$unsubscribe_user = (0, import_index_d51717b2.h)(import_lib_236980de.u, (value) => value);
-  $$unsubscribe_habitStore = (0, import_index_d51717b2.h)(import_lib_236980de.h, (value) => $habitStore = value);
-  (0, import_lib_236980de.c)();
+  $$unsubscribe_user = (0, import_index_df821055.a)(import_lib_9f96b971.u, (value) => value);
+  $$unsubscribe_habitStore = (0, import_index_df821055.a)(import_lib_9f96b971.h, (value) => $habitStore = value);
+  (0, import_lib_9f96b971.c)();
   let habits = [];
-  let open = false;
   let newHabitName = "";
-  let $$settled;
-  let $$rendered;
-  do {
-    $$settled = true;
+  $$result.css.add(css);
+  {
     {
-      {
-        if ($habitStore) {
-          habits = [...$habitStore];
-        }
+      if ($habitStore) {
+        habits = [...$habitStore];
       }
     }
-    $$rendered = `<div class="${"content-container"}"><h1>Habits</h1>
-	${habits ? `${(0, import_index_d51717b2.p)(habits, (habit) => {
-      return `<div class="${"card"}"><h2>${(0, import_index_d51717b2.g)(habit.name)}</h2>
-			${habit.is_complete ? `<span class="${"material-icons-outlined clickable"}">check_box
-				</span>` : `<span class="${"material-icons-outlined clickable"}">check_box_outline_blank
-				</span>`}
-			<p>Streak: ${(0, import_index_d51717b2.g)(habit.streak)}</p>
-			
-			${habit.timeline && habit.timeline.length > 0 ? `<p>Goal: ${(0, import_index_d51717b2.g)(habit.goalProgress)}/${(0, import_index_d51717b2.g)(habit.goal)}</p>` : `${`<p>Never Completed</p>`}`}
-		</div>`;
-    })}` : ``}
-	${``}
-	${(0, import_index_d51717b2.v)(import_Add16_3d36ae4a.B, "Button").$$render($$result, {
-      iconDescription: "New Habit",
-      icon: import_Add16_3d36ae4a.A
-    }, {}, {})}
-	${(0, import_index_d51717b2.v)(import_Add16_3d36ae4a.M, "Modal").$$render($$result, {
-      size: "xs",
-      modalHeading: "New Habit Name",
-      primaryButtonText: "Confirm",
-      secondaryButtonText: "Cancel",
-      open
-    }, {
-      open: ($$value) => {
-        open = $$value;
-        $$settled = false;
-      }
-    }, {
-      default: () => {
-        return `<input${(0, import_index_d51717b2.d)("value", newHabitName, 0)}>`;
-      }
-    })}
-</div>`;
-  } while (!$$settled);
+  }
   $$unsubscribe_user();
   $$unsubscribe_habitStore();
-  return $$rendered;
+  return `<div class="${"content-container"}"><h1 class="${"svelte-ztyz41"}">Habits</h1>
+	${habits ? `${(0, import_index_df821055.f)(habits, (habit) => {
+    return `<div class="${"card bg-base-100 shadow-xl card-compact"}"><div class="${"card-body"}"><div class="${"habit-upper svelte-ztyz41"}"><div><h2 class="${"card-title"}">${(0, import_index_df821055.g)(habit.name)}</h2>
+
+							<p>Streak: ${(0, import_index_df821055.g)(habit.streak)}</p></div>
+
+						<div class="${"checkbox svelte-ztyz41"}">${habit.is_complete ? `<span class="${"material-symbols-outlined -translate-x-1/2 text-accent rounded-full svelte-ztyz41"}">check_circle
+								</span>` : `<span class="${"material-symbols-outlined -translate-x-1/2 svelte-ztyz41"}">circle
+								</span>`}
+						</div></div>
+
+					${(0, import_index_df821055.v)(import_ProgressBar_b583b79a.P, "ProgressBar").$$render($$result, {
+      class: "progress progress-accent mt-2",
+      value: habit.goalProgress,
+      max: habit.goal
+    }, {}, {})}
+					<p class="${"goal-info svelte-ztyz41"}">Goal: ${(0, import_index_df821055.g)(habit.goalProgress)}/${(0, import_index_df821055.g)(habit.goal)}</p></div>
+			</div>`;
+  })}` : ``}
+	<div class="${"add-button  svelte-ztyz41"}"><button class="${"btn btn-primary"}">Add New Habit</button></div>
+	<div class="${["modal modal-bottom sm:modal-middle", ""].join(" ").trim()}"><div class="${"modal-box"}"><label for="${"my-modal-7"}" class="${"btn btn-sm btn-circle absolute right-2 top-2"}">\u2715</label>
+			<label for="${"habit-name"}" class="${"label"}"><span class="${"label-text"}">New Habit Name</span></label>
+			<input id="${"habit-name"}" type="${"text"}" placeholder="${"Type here"}" class="${"input input-bordered input-primary w-full max-w-xs"}"${(0, import_index_df821055.e)("value", newHabitName, 0)}>
+			<div class="${"modal-action"}"><button class="${"btn btn-primary modal-button"}">Create Habit</button></div></div></div>
+	
+</div>`;
 });
-const Routes = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
-  return `${(0, import_index_d51717b2.v)(Habits, "Habits").$$render($$result, {}, {}, {})}`;
+const Routes = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
+  return `${(0, import_index_df821055.v)(Habits, "Habits").$$render($$result, {}, {}, {})}`;
 });

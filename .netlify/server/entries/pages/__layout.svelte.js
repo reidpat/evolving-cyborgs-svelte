@@ -38,69 +38,37 @@ __export(stdin_exports, {
   load: () => load
 });
 module.exports = __toCommonJS(stdin_exports);
-var import_index_d51717b2 = require("../../chunks/index-d51717b2.js");
-var import_lib_236980de = require("../../chunks/lib-236980de.js");
+var import_index_df821055 = require("../../chunks/index-df821055.js");
+var import_lib_9f96b971 = require("../../chunks/lib-9f96b971.js");
 var import_supabaseClient_51bc0a25 = require("../../chunks/supabaseClient-51bc0a25.js");
+var import_ProgressBar_b583b79a = require("../../chunks/ProgressBar-b583b79a.js");
 var import_supabase_js = require("@supabase/supabase-js");
-const SignIn = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
-  return `<button>Login</button>`;
+const SignIn = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
+  return `<button class="${"btn btn-primary"}">Login</button>`;
 });
-const SignOut = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
-  return `<div><button class="${"button block"}" ${""}>Sign Out
+const SignOut = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
+  return `<div><button class="${"btn btn-primary"}" ${""}>Sign Out
     </button></div>`;
-});
-const ProgressBar = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
-  let indeterminate;
-  let capped;
-  let $$restProps = (0, import_index_d51717b2.a)($$props, ["value", "max", "labelText", "hideLabel", "helperText", "id"]);
-  let { value = void 0 } = $$props;
-  let { max = 100 } = $$props;
-  let { labelText = "" } = $$props;
-  let { hideLabel = false } = $$props;
-  let { helperText = "" } = $$props;
-  let { id = "ccs-" + Math.random().toString(36) } = $$props;
-  let helperId = "ccs-" + Math.random().toString(36);
-  if ($$props.value === void 0 && $$bindings.value && value !== void 0)
-    $$bindings.value(value);
-  if ($$props.max === void 0 && $$bindings.max && max !== void 0)
-    $$bindings.max(max);
-  if ($$props.labelText === void 0 && $$bindings.labelText && labelText !== void 0)
-    $$bindings.labelText(labelText);
-  if ($$props.hideLabel === void 0 && $$bindings.hideLabel && hideLabel !== void 0)
-    $$bindings.hideLabel(hideLabel);
-  if ($$props.helperText === void 0 && $$bindings.helperText && helperText !== void 0)
-    $$bindings.helperText(helperText);
-  if ($$props.id === void 0 && $$bindings.id && id !== void 0)
-    $$bindings.id(id);
-  indeterminate = value === void 0;
-  capped = value > max ? max : value < 0 ? 0 : value;
-  return `<div${(0, import_index_d51717b2.b)([(0, import_index_d51717b2.e)($$restProps)], {
-    classes: "bx--progress-bar " + (indeterminate ? "bx--progress-bar--indeterminate" : "")
-  })}><label${(0, import_index_d51717b2.d)("for", id, 0)}${(0, import_index_d51717b2.f)(("bx--progress-bar__label " + (hideLabel ? "bx--visually-hidden" : "")).trim())}>${slots.labelText ? slots.labelText({}) : `
-      ${(0, import_index_d51717b2.g)(labelText)}
-    `}</label>
-  <div role="${"progressbar"}"${(0, import_index_d51717b2.d)("id", id, 0)}${(0, import_index_d51717b2.d)("aria-valuemin", indeterminate ? void 0 : 0, 0)}${(0, import_index_d51717b2.d)("aria-valuemax", indeterminate ? void 0 : max, 0)}${(0, import_index_d51717b2.d)("aria-valuenow", indeterminate ? void 0 : capped, 0)}${(0, import_index_d51717b2.d)("aria-describedby", helperText ? helperId : null, 0)}${(0, import_index_d51717b2.f)("bx--progress-bar__track".trim())}><div style="${"transform: scaleX(" + (0, import_index_d51717b2.g)(capped / max) + ")"}"${(0, import_index_d51717b2.f)("bx--progress-bar__bar".trim())}></div></div>
-  ${helperText ? `<div${(0, import_index_d51717b2.d)("id", helperId, 0)}${(0, import_index_d51717b2.f)("bx--progress-bar__helper-text".trim())}>${(0, import_index_d51717b2.g)(helperText)}</div>` : ``}</div>`;
 });
 var User_svelte_svelte_type_style_lang = "";
 const css$3 = {
-  code: ".inner-nav.svelte-xetbe1{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:auto}.outer-nav.svelte-xetbe1{width:100%;margin:auto;background-color:#1d1c1f;color:#c4c2b9;padding:10px}.xp-bar.svelte-xetbe1{flex:1;margin:0px 20px}",
+  code: ".inner-nav.svelte-1ydtv3h{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:auto}.outer-nav.svelte-1ydtv3h{position:fixed;top:0px;width:100%;margin:auto;background-color:#1d1c1f;color:#c4c2b9;padding:10px;z-index:4}.xp-bar.svelte-1ydtv3h{flex:1;margin:0px 20px}",
   map: null
 };
-const User = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const User = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let $user, $$unsubscribe_user;
   let $profileStore, $$unsubscribe_profileStore;
-  $$unsubscribe_user = (0, import_index_d51717b2.h)(import_lib_236980de.u, (value) => $user = value);
-  $$unsubscribe_profileStore = (0, import_index_d51717b2.h)(import_lib_236980de.p, (value) => $profileStore = value);
+  $$unsubscribe_user = (0, import_index_df821055.a)(import_lib_9f96b971.u, (value) => $user = value);
+  $$unsubscribe_profileStore = (0, import_index_df821055.a)(import_lib_9f96b971.p, (value) => $profileStore = value);
   let profile;
   async function startupLoad() {
     if (!$profileStore) {
       let { data: profiles, error } = await import_supabaseClient_51bc0a25.s.from("profiles").select("*").eq("id", $user.id);
-      import_lib_236980de.p.set(profiles[0]);
+      import_lib_9f96b971.p.set(profiles[0]);
     }
     let userID = $user.id;
     import_supabaseClient_51bc0a25.s.from(`profiles:id=eq.${userID}`).on("*", (payload) => {
-      import_lib_236980de.p.set(__spreadValues({}, payload.new));
+      import_lib_9f96b971.p.set(__spreadValues({}, payload.new));
     }).subscribe();
   }
   $$result.css.add(css$3);
@@ -115,20 +83,20 @@ const User = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots)
   }
   $$unsubscribe_user();
   $$unsubscribe_profileStore();
-  return `<div class="${"outer-nav svelte-xetbe1"}"><div class="${"inner-nav svelte-xetbe1"}"><h1>EC</h1>
-		<div class="${"xp-bar svelte-xetbe1"}">${$user ? `${(0, import_index_d51717b2.v)(ProgressBar, "ProgressBar").$$render($$result, {
+  return `<div class="${"outer-nav svelte-1ydtv3h"}"><div class="${"inner-nav svelte-1ydtv3h"}"><h1>EC</h1>
+		<div class="${"xp-bar svelte-1ydtv3h"}">${$user ? `${(0, import_index_df821055.v)(import_ProgressBar_b583b79a.P, "ProgressBar").$$render($$result, {
     id: "xp_bar",
     value: profile.xp,
     max: profile.next_level_xp,
     labelText: `Level: ${profile.level}`,
     helperText: `${profile.xp}/${profile.next_level_xp} xp`
   }, {}, {})}` : ``}</div>
-		<div>${$user ? `${(0, import_index_d51717b2.v)(SignOut, "SignOut").$$render($$result, {}, {}, {})}` : `${(0, import_index_d51717b2.v)(SignIn, "SignIn").$$render($$result, {}, {}, {})}`}</div></div>
+		<div>${$user ? `${(0, import_index_df821055.v)(SignOut, "SignOut").$$render($$result, {}, {}, {})}` : `${(0, import_index_df821055.v)(SignIn, "SignIn").$$render($$result, {}, {}, {})}`}</div></div>
 </div>`;
 });
 var app = "";
-const Eventbus = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
-  (0, import_lib_236980de.i)(import_index_d51717b2.i);
+const Eventbus = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
+  (0, import_lib_9f96b971.i)(import_index_df821055.b);
   return `${slots.default ? slots.default({}) : ``}`;
 });
 const defaults = {
@@ -141,7 +109,7 @@ const defaults = {
   intro: { x: 256 }
 };
 const createToast = () => {
-  const { subscribe: subscribe2, update } = (0, import_lib_236980de.w)([]);
+  const { subscribe: subscribe2, update } = (0, import_lib_9f96b971.w)([]);
   let count = 0;
   const options = {};
   const _obj = (obj) => obj instanceof Object;
@@ -228,7 +196,7 @@ function get_interpolator(a, b) {
   throw new Error(`Cannot interpolate ${type} values`);
 }
 function tweened(value, defaults2 = {}) {
-  const store = (0, import_lib_236980de.w)(value);
+  const store = (0, import_lib_9f96b971.w)(value);
   let task;
   let target_value = value;
   function set(new_value, opts) {
@@ -239,7 +207,7 @@ function tweened(value, defaults2 = {}) {
     target_value = new_value;
     let previous_task = task;
     let started = false;
-    let { delay = 0, duration = 400, easing = import_index_d51717b2.k, interpolate = get_interpolator } = (0, import_index_d51717b2.j)((0, import_index_d51717b2.j)({}, defaults2), opts);
+    let { delay = 0, duration = 400, easing = import_index_df821055.i, interpolate = get_interpolator } = (0, import_index_df821055.d)((0, import_index_df821055.d)({}, defaults2), opts);
     if (duration === 0) {
       if (previous_task) {
         previous_task.abort();
@@ -248,9 +216,9 @@ function tweened(value, defaults2 = {}) {
       store.set(value = target_value);
       return Promise.resolve();
     }
-    const start = (0, import_index_d51717b2.n)() + delay;
+    const start = (0, import_index_df821055.n)() + delay;
     let fn;
-    task = (0, import_index_d51717b2.l)((now2) => {
+    task = (0, import_index_df821055.l)((now2) => {
       if (now2 < start)
         return true;
       if (!started) {
@@ -284,11 +252,11 @@ const css$2 = {
   code: "._toastItem.svelte-5er0t9{width:var(--toastWidth, 16rem);height:var(--toastHeight, auto);min-height:var(--toastMinHeight, 3.5rem);margin:var(--toastMargin, 0 0 0.5rem 0);padding:var(--toastPadding, 0);background:var(--toastBackground, rgba(66, 66, 66, 0.9));color:var(--toastColor, #fff);box-shadow:var(\n    --toastBoxShadow,\n    0 4px 6px -1px rgba(0, 0, 0, 0.1),\n    0 2px 4px -1px rgba(0, 0, 0, 0.06)\n  );border:var(--toastBorder, none);border-radius:var(--toastBorderRadius, 0.125rem);position:relative;display:flex;flex-direction:row;align-items:center;overflow:hidden;will-change:transform, opacity;-webkit-tap-highlight-color:transparent}._toastMsg.svelte-5er0t9{padding:var(--toastMsgPadding, 0.75rem 0.5rem);flex:1 1 0%}.pe.svelte-5er0t9,._toastMsg.svelte-5er0t9 a{pointer-events:auto}._toastBtn.svelte-5er0t9{width:2rem;height:100%;font:1rem sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;outline:none}._toastBar.svelte-5er0t9{top:var(--toastBarTop, auto);right:var(--toastBarRight, auto);bottom:var(--toastBarBottom, 0);left:var(--toastBarLeft, 0);height:var(--toastBarHeight, 6px);width:var(--toastBarWidth, 100%);position:absolute;display:block;-webkit-appearance:none;-moz-appearance:none;appearance:none;border:none;background:transparent;pointer-events:none}._toastBar.svelte-5er0t9::-webkit-progress-bar{background:transparent}._toastBar.svelte-5er0t9::-webkit-progress-value{background:var(--toastProgressBackground, var(--toastBarBackground, rgba(33, 150, 243, 0.75)))}._toastBar.svelte-5er0t9::-moz-progress-bar{background:var(--toastProgressBackground, var(--toastBarBackground, rgba(33, 150, 243, 0.75)))}",
   map: null
 };
-const ToastItem = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const ToastItem = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let $progress, $$unsubscribe_progress;
   let { item } = $$props;
-  const progress = tweened(item.initial, { duration: item.duration, easing: import_index_d51717b2.k });
-  $$unsubscribe_progress = (0, import_index_d51717b2.h)(progress, (value) => $progress = value);
+  const progress = tweened(item.initial, { duration: item.duration, easing: import_index_df821055.i });
+  $$unsubscribe_progress = (0, import_index_df821055.a)(progress, (value) => $progress = value);
   const close = () => toast.pop(item.id);
   const autoclose = () => {
     if ($progress === 1 || $progress === 0) {
@@ -303,7 +271,7 @@ const ToastItem = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, s
     }
     return props;
   };
-  (0, import_index_d51717b2.o)(() => {
+  (0, import_index_df821055.o)(() => {
     if (typeof item.onpop === "function") {
       item.onpop(item.id);
     }
@@ -323,9 +291,9 @@ const ToastItem = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, s
     }
   }
   $$unsubscribe_progress();
-  return `<div class="${["_toastItem svelte-5er0t9", item.pausable ? "pe" : ""].join(" ").trim()}"><div role="${"status"}" class="${["_toastMsg svelte-5er0t9", item.component ? "pe" : ""].join(" ").trim()}">${item.component ? `${(0, import_index_d51717b2.v)(item.component.src || import_index_d51717b2.m, "svelte:component").$$render($$result, Object.assign(getProps()), {}, {})}` : `<!-- HTML_TAG_START -->${item.msg}<!-- HTML_TAG_END -->`}</div>
+  return `<div class="${["_toastItem svelte-5er0t9", item.pausable ? "pe" : ""].join(" ").trim()}"><div role="${"status"}" class="${["_toastMsg svelte-5er0t9", item.component ? "pe" : ""].join(" ").trim()}">${item.component ? `${(0, import_index_df821055.v)(item.component.src || import_index_df821055.m, "svelte:component").$$render($$result, Object.assign(getProps()), {}, {})}` : `<!-- HTML_TAG_START -->${item.msg}<!-- HTML_TAG_END -->`}</div>
   ${item.dismissable ? `<div class="${"_toastBtn pe svelte-5er0t9"}" role="${"button"}" tabindex="${"-1"}">\u2715</div>` : ``}
-  <progress class="${"_toastBar svelte-5er0t9"}"${(0, import_index_d51717b2.d)("value", $progress, 0)}></progress>
+  <progress class="${"_toastBar svelte-5er0t9"}"${(0, import_index_df821055.e)("value", $progress, 0)}></progress>
 </div>`;
 });
 var SvelteToast_svelte_svelte_type_style_lang = "";
@@ -333,9 +301,9 @@ const css$1 = {
   code: "._toastContainer.svelte-yh90az{top:var(--toastContainerTop, 1.5rem);right:var(--toastContainerRight, 2rem);bottom:var(--toastContainerBottom, auto);left:var(--toastContainerLeft, auto);position:fixed;margin:0;padding:0;list-style-type:none;pointer-events:none;z-index:var(--toastContainerZIndex, 9999)}",
   map: null
 };
-const SvelteToast = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const SvelteToast = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let $toast, $$unsubscribe_toast;
-  $$unsubscribe_toast = (0, import_index_d51717b2.h)(toast, (value) => $toast = value);
+  $$unsubscribe_toast = (0, import_index_df821055.a)(toast, (value) => $toast = value);
   let { options = {} } = $$props;
   let { target = "default" } = $$props;
   let items;
@@ -350,8 +318,8 @@ const SvelteToast = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings,
   }
   items = $toast.filter((i) => i.target === target);
   $$unsubscribe_toast();
-  return `<ul class="${"_toastContainer svelte-yh90az"}">${(0, import_index_d51717b2.p)(items, (item) => {
-    return `<li class="${(0, import_index_d51717b2.g)((0, import_index_d51717b2.q)(item.classes.join(" "))) + " svelte-yh90az"}"${(0, import_index_d51717b2.d)("style", getCss(item.theme), 0)}>${(0, import_index_d51717b2.v)(ToastItem, "ToastItem").$$render($$result, { item }, {}, {})}
+  return `<ul class="${"_toastContainer svelte-yh90az"}">${(0, import_index_df821055.f)(items, (item) => {
+    return `<li class="${(0, import_index_df821055.g)((0, import_index_df821055.h)(item.classes.join(" "))) + " svelte-yh90az"}"${(0, import_index_df821055.e)("style", getCss(item.theme), 0)}>${(0, import_index_df821055.v)(ToastItem, "ToastItem").$$render($$result, { item }, {}, {})}
     </li>`;
   })}
 </ul>`;
@@ -361,7 +329,7 @@ const css = {
   code: "#bottom-nav-wrapper.svelte-10upzz0.svelte-10upzz0{position:fixed;bottom:0px;display:flex;justify-content:center;width:100%;background-color:#1d1c1f}#bottom-nav-wrapper.svelte-10upzz0 a.svelte-10upzz0{margin:20px}",
   map: null
 };
-const BottomNav = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const BottomNav = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   $$result.css.add(css);
   return `<div id="${"bottom-nav-wrapper"}" class="${"svelte-10upzz0"}"><a href="${"/"}" class="${"clickable svelte-10upzz0"}"><h3>Habits</h3></a>
 <a href="${"/vices"}" class="${"clickable svelte-10upzz0"}"><h3>Vices</h3></a> 
@@ -374,11 +342,11 @@ async function load({ session, context }) {
   }
   return { props: { sessionInfo } };
 }
-const _layout = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const _layout = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let $user, $$unsubscribe_user;
-  let $$unsubscribe_profileStore;
-  $$unsubscribe_user = (0, import_index_d51717b2.h)(import_lib_236980de.u, (value) => $user = value);
-  $$unsubscribe_profileStore = (0, import_index_d51717b2.h)(import_lib_236980de.p, (value) => value);
+  let $profileStore, $$unsubscribe_profileStore;
+  $$unsubscribe_user = (0, import_index_df821055.a)(import_lib_9f96b971.u, (value) => $user = value);
+  $$unsubscribe_profileStore = (0, import_index_df821055.a)(import_lib_9f96b971.p, (value) => $profileStore = value);
   let { sessionInfo } = $$props;
   import_supabaseClient_51bc0a25.s.auth.onAuthStateChange(async (event, session) => {
     if (event === "SIGNED_IN") {
@@ -389,18 +357,27 @@ const _layout = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slo
       });
       console.log(response);
     }
-    import_lib_236980de.u.set(session.user);
+    import_lib_9f96b971.u.set(session.user);
   });
+  let habitGoalInfo = {};
   if ($$props.sessionInfo === void 0 && $$bindings.sessionInfo && sessionInfo !== void 0)
     $$bindings.sessionInfo(sessionInfo);
   $$unsubscribe_user();
   $$unsubscribe_profileStore();
-  return `${(0, import_index_d51717b2.v)(SvelteToast, "SvelteToast").$$render($$result, {}, {}, {})}
-${(0, import_index_d51717b2.v)(User, "User").$$render($$result, {}, {}, {})}
-<div class="${"content-container"}">${(0, import_index_d51717b2.v)(Eventbus, "Eventbus").$$render($$result, {}, {}, {
+  return `${(0, import_index_df821055.v)(SvelteToast, "SvelteToast").$$render($$result, {}, {}, {})}
+${(0, import_index_df821055.v)(User, "User").$$render($$result, {}, {}, {})}
+${$user ? `<div class="${"main-content-container bg-neutral"}">${(0, import_index_df821055.v)(Eventbus, "Eventbus").$$render($$result, {}, {}, {
     default: () => {
       return `${$user ? `${slots.default ? slots.default({}) : ``}` : ``}`;
     }
-  })}</div>
-${$user ? `${(0, import_index_d51717b2.v)(BottomNav, "BottomNav").$$render($$result, {}, {}, {})}` : ``}`;
+  })}
+		<div class="${["modal modal-bottom sm:modal-middle", ""].join(" ").trim()}"><div class="${"modal-box"}"><p>Congratulations, you have now leveled up to ${(0, import_index_df821055.g)($profileStore.level)}. Keep up the great work!
+				</p>
+				<div class="${"modal-action"}"><label for="${"my-modal-6"}" class="${"btn"}">Yay!</label></div></div></div>
+		<div class="${["modal modal-bottom sm:modal-middle", ""].join(" ").trim()}"><div class="${"modal-box"}">${habitGoalInfo ? `<p>You just hit your goal of ${(0, import_index_df821055.g)(habitGoalInfo.progress)} days on ${(0, import_index_df821055.g)(habitGoalInfo.name)} and earned
+						an extra ${(0, import_index_df821055.g)(habitGoalInfo.progress * 100)} xp. Do you think you can keep it up and hit your
+						next goal of ${(0, import_index_df821055.g)(habitGoalInfo.goal)} days?
+					</p>` : ``}
+				<div class="${"modal-action"}"><label for="${"my-modal-7"}" class="${"btn"}">You Bet!</label></div></div></div></div>
+	${(0, import_index_df821055.v)(BottomNav, "BottomNav").$$render($$result, {}, {}, {})}` : ``}`;
 });

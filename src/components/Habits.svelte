@@ -2,8 +2,6 @@
 	import { onMount } from 'svelte';
 	import { habitStore, user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
-	import Fa from 'svelte-fa';
-	import { faCircleMinus, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
 	import { ProgressBar } from 'carbon-components-svelte';
 	const dispatch = createEventbusDispatcher();
@@ -341,9 +339,13 @@
 
 						<div class="checkbox">
 							{#if habit.is_complete}
-								<span on:click={completeHabit(habit)}><Fa color="hsl(var(--a))"  icon={faCircleCheck} translateX={-0.5}/></span>
+								<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2 text-accent rounded-full">
+									check_circle
+								</span>
 							{:else}
-								<span on:click={completeHabit(habit)}><Fa color="hsl(var(--pc))" icon={faCircleMinus} translateX={-0.5}/></span>
+								<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2">
+									circle
+								</span>
 							{/if}
 						</div>
 					</div>
@@ -440,5 +442,4 @@
 	.checkbox span {
 		font-size: 50px;
 	}
-
 </style>

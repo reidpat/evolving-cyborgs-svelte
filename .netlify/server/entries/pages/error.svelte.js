@@ -21,23 +21,23 @@ __export(stdin_exports, {
   load: () => load
 });
 module.exports = __toCommonJS(stdin_exports);
-var import_index_d51717b2 = require("../../chunks/index-d51717b2.js");
+var import_index_df821055 = require("../../chunks/index-df821055.js");
 function load({ error, status }) {
   return { props: { error, status } };
 }
-const Error2 = (0, import_index_d51717b2.c)(($$result, $$props, $$bindings, slots) => {
+const Error2 = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
   let { status } = $$props;
   let { error } = $$props;
   if ($$props.status === void 0 && $$bindings.status && status !== void 0)
     $$bindings.status(status);
   if ($$props.error === void 0 && $$bindings.error && error !== void 0)
     $$bindings.error(error);
-  return `<h1>${(0, import_index_d51717b2.g)(status)}</h1>
+  return `<h1>${(0, import_index_df821055.g)(status)}</h1>
 
-<pre>${(0, import_index_d51717b2.g)(error.message)}</pre>
+<pre>${(0, import_index_df821055.g)(error.message)}</pre>
 
 
 
-${error.frame ? `<pre>${(0, import_index_d51717b2.g)(error.frame)}</pre>` : ``}
-${error.stack ? `<pre>${(0, import_index_d51717b2.g)(error.stack)}</pre>` : ``}`;
+${error.frame ? `<pre>${(0, import_index_df821055.g)(error.frame)}</pre>` : ``}
+${error.stack ? `<pre>${(0, import_index_df821055.g)(error.stack)}</pre>` : ``}`;
 });

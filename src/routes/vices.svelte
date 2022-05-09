@@ -80,8 +80,9 @@
 	async function awardXp(days, last, vice) {
 		let xp = 0;
 		let difference = days - last;
-		for (let i = 1; i == difference; i++) {
-			xp += 100 + days * 10;
+		console.log(difference);
+		for (let i = last; i <= days; i++) {
+			xp += 100 + i * 10;
 		}
 		console.log('xp', xp);
 		dispatch('addXp', { xp: xp, event: vice.name });
@@ -89,18 +90,30 @@
 		const { data, error } = await supabase
 			.from('vices')
 			.update({ last_award: days })
-			.eq('user_id', $user.id);
+			.eq('id', vice.id);
+
+		console.log(data, error);
 	}
 
 	function updateVice(vice) {
+		if (vice.timeline.length > 1) {
+			vice.timeline.sort((a, b) => {
+				let dateA = new Date(a.created_at);
+				let dateB = new Date(b.created_at);
+				return dateA - dateB
+			});
+		}
 		let last = new Date(vice.timeline[vice.timeline.length - 1].created_at);
+		console.log('last', last);
 		let now = new Date();
+		console.log('now', now);
 		let currentSeconds = now - last;
 		let current = parseSecondsToDHM(currentSeconds);
+		console.log(current);
 		if (current.days > vice.last_award) {
-			console.log(current.days - vice.last_award);
-			awardXp(current.days, vice.last_award, vice);
-			vice.last_award = current.days;
+			// console.log(current.days - vice.last_award);
+			// awardXp(current.days, vice.last_award, vice);
+			// vice.last_award = current.days;
 		}
 
 		if (currentSeconds > vice.best) {
@@ -133,7 +146,7 @@
 	async function resetVice(vice, dateTime) {
 		console.log(dateTime);
 
-		let newVice = { ...vice };
+		let newVice = { ...vice, last_award: 0 };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
 		let reset = new Date(dateTime);
 		if (last > reset) {
@@ -214,25 +227,52 @@
 	{#each vices as vice}
 		<div class="card bg-base-100 shadow-xl card-compact">
 			<div class="card-body">
-				<h2>{vice.name}</h2>
-				<p>Best: {vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</p>
-				<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
-				<p>Num: {vice.num}</p>
-				<p>Current: {vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</p>
-				<button
-					class="btn btn-accent"
-					on:click={() => {
-						resetOpen = true;
-						currentVice = vice;
-					}}>Reset Vice</button
-				>
+				<h2 class="card-title">{vice.name}</h2>
+				<div tabindex="0" class="collapse collapse-arrow">
+					<div class="collapse-title text-xl font-medium">
+						<p class="font-semibold">
+							{vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m
+						</p>
+					</div>
+					<div class="collapse-content">
+						<p>Best: {vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</p>
+						<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
+						<p>Resets: {vice.num}</p>
+					</div>
+				</div>
+				<div class="card-actions justify-between">
+					<button
+						class="btn btn-accent btn-outline"
+						on:click={() => {
+							resetOpen = true;
+							currentVice = vice;
+						}}>Reset <span class="material-symbols-outlined"> restart_alt </span></button
+					>
+					{#if vice.last_award >= vice.current_ui.days}
+						<button class="btn btn-circle"
+							><span class="material-symbols-outlined"> redeem </span></button
+						>
+					{:else}
+						<div
+							class="indicator"
+							on:click={() => {
+								awardXp(vice.current_ui.days, vice.last_award, vice);
+							}}
+						>
+							<span class="indicator-item indicator-center badge badge-primary"
+								>{vice.current_ui.days - vice.last_award}</span
+							>
+							<button class="btn btn-circle btn-secondary"
+								><span class="material-symbols-outlined"> redeem </span></button
+							>
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	{/each}
 	<div class="add-button">
-		<button class="btn btn-primary" on:click={() => (open = true)} iconDescription="New Vice" icon={Add16}
-			>Add New Vice</button
-		>
+		<button class="btn btn-accent btn-outline" on:click={() => (open = true)}>Add New Vice</button>
 	</div>
 	<Modal
 		bind:open={resetOpen}

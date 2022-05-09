@@ -83,36 +83,53 @@
 	let open = false;
 	let habitOpen = false;
 	let habitGoalInfo = {};
+
 	function habitGoal(event) {
 		habitOpen = true;
 		console.log(event.detail);
-		habitGoalInfo = {...event.detail}
-		addXp({detail: {xp: habitGoalInfo.progress * 100, event: `reaching your goal of ${habitGoalInfo.goal} days on habit ${habitGoalInfo.name}`}})
+		habitGoalInfo = { ...event.detail };
+		addXp({
+			detail: {
+				xp: habitGoalInfo.progress * 2,
+				event: `reaching your goal of ${habitGoalInfo.goal} days on habit ${habitGoalInfo.name}`
+			}
+		});
 	}
 </script>
 
 <SvelteToast />
 <User />
 {#if $user}
-<div class="content-container">
-	<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>
-		{#if $user}
-			<slot />
-		{/if}
-	</Eventbus>
-	<Modal passiveModal bind:open modalHeading="Level Up" on:open on:close>
-		<p>
-			Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
-		</p>
-	</Modal>
-	<Modal passiveModal bind:open={habitOpen} modalHeading="Goooaaaaaal!" on:open on:close>
-		{#if habitGoalInfo}
-			<p>
-				You just hit your goal of {habitGoalInfo.progress} days on {habitGoalInfo.name} and earned an
-				extra {habitGoalInfo.progress * 100} xp. Do you think you can keep it up and hit your next goal of {habitGoalInfo.goal} days?
-			</p>
-		{/if}
-	</Modal>
-</div>
+	<div class="main-content-container bg-neutral">
+		<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>
+			{#if $user}
+				<slot />
+			{/if}
+		</Eventbus>
+		<div class="modal modal-bottom sm:modal-middle" class:modal-open={open}>
+			<div class="modal-box">
+				<p>
+					Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
+				</p>
+				<div class="modal-action">
+					<label for="my-modal-6" on:click={() => open = false} class="btn">Yay!</label>
+				</div>
+			</div>
+		</div>
+		<div class="modal modal-bottom sm:modal-middle" class:modal-open={habitOpen}>
+			<div class="modal-box">
+				{#if habitGoalInfo}
+					<p>
+						You just hit your goal of {habitGoalInfo.progress} days on {habitGoalInfo.name} and earned
+						an extra {habitGoalInfo.progress * 100} xp. Do you think you can keep it up and hit your
+						next goal of {habitGoalInfo.goal} days?
+					</p>
+				{/if}
+				<div class="modal-action">
+					<label for="my-modal-7" on:click={() => {habitOpen = false}} class="btn">You Bet!</label>
+				</div>
+			</div>
+		</div>
+	</div>
 	<BottomNav />
 {/if}

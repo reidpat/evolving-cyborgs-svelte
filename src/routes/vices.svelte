@@ -79,8 +79,8 @@
 
 	async function awardXp(days, last, vice) {
 		let xp = 0;
-		let difference = (days - last);
-		for(let i = 1; i == difference; i++){
+		let difference = days - last;
+		for (let i = 1; i == difference; i++) {
 			xp += 100 + days * 10;
 		}
 		console.log('xp', xp);
@@ -136,8 +136,8 @@
 		let newVice = { ...vice };
 		let last = new Date(newVice.timeline[newVice.timeline.length - 1].created_at);
 		let reset = new Date(dateTime);
-		if(last > reset){
-			console.log("cannot select a date that is before a previous reset")
+		if (last > reset) {
+			console.log('cannot select a date that is before a previous reset');
 			return;
 		}
 		let currentSeconds = reset - last;
@@ -159,7 +159,7 @@
 
 		const { data: timeline } = await supabase
 			.from('timeline')
-			.insert([{ user_id: $user.id, vice: newVice.id , created_at: reset}]);
+			.insert([{ user_id: $user.id, vice: newVice.id, created_at: reset }]);
 
 		const { data: returnedVice, error } = await supabase
 			.from('vices')
@@ -209,65 +209,70 @@
 	let currentVice = null;
 </script>
 
-<h1>Vices</h1>
-{#each vices as vice}
-	<div class="card">
-		<h2>{vice.name}</h2>
-		<p>Best: {vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</p>
-		<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
-		<p>Num: {vice.num}</p>
-		<p>Current: {vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</p>
-		<Button
-			on:click={() => {
-				resetOpen = true;
-				currentVice = vice;
-			}}
-			iconDescription="New Vice"
-			icon={Reset16}
-		>Reset Vice</Button>
+<div class="content-container">
+	<h1>Vices</h1>
+	{#each vices as vice}
+		<div class="card bg-base-100 shadow-xl card-compact">
+			<div class="card-body">
+				<h2>{vice.name}</h2>
+				<p>Best: {vice.best_ui.days}d {vice.best_ui.hours}h {vice.best_ui.minutes}m</p>
+				<p>Total: {vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m</p>
+				<p>Num: {vice.num}</p>
+				<p>Current: {vice.current_ui.days}d {vice.current_ui.hours}h {vice.current_ui.minutes}m</p>
+				<button
+					class="btn btn-accent"
+					on:click={() => {
+						resetOpen = true;
+						currentVice = vice;
+					}}>Reset Vice</button
+				>
+			</div>
+		</div>
+	{/each}
+	<div class="add-button">
+		<button class="btn btn-primary" on:click={() => (open = true)} iconDescription="New Vice" icon={Add16}
+			>Add New Vice</button
+		>
 	</div>
-{/each}
-<div class="add-button">
-	<Button on:click={() => (open = true)} iconDescription="New Vice" icon={Add16}>Add New Vice</Button>
-</div>
-<Modal
-	bind:open={resetOpen}
-	size="xs"
-	modalHeading="Set date and time"
-	primaryButtonText="Confirm"
-	secondaryButtonText="Cancel"
-	on:click:button--secondary={() => (resetOpen = false)}
-	on:open
-	on:close
-	on:click:button--primary={() => {
-		resetOpen = false;
-		resetVice(currentVice, myDate);
-		myDate = null;
-		currentVice = null;
-	}}
->
-	{#if currentVice}
-		<p>Resetting the vice {currentVice.name}</p>
-	{/if}
+	<Modal
+		bind:open={resetOpen}
+		size="xs"
+		modalHeading="Set date and time"
+		primaryButtonText="Confirm"
+		secondaryButtonText="Cancel"
+		on:click:button--secondary={() => (resetOpen = false)}
+		on:open
+		on:close
+		on:click:button--primary={() => {
+			resetOpen = false;
+			resetVice(currentVice, myDate);
+			myDate = null;
+			currentVice = null;
+		}}
+	>
+		{#if currentVice}
+			<p>Resetting the vice {currentVice.name}</p>
+		{/if}
 
-	<SveltyPicker inputClasses="form-control"  format="yyyy-mm-dd hh:ii" bind:value={myDate} />
-</Modal>
-<Modal
-	bind:open
-	size="xs"
-	modalHeading="New Vice Name"
-	primaryButtonText="Confirm"
-	secondaryButtonText="Cancel"
-	on:click:button--secondary={() => (open = false)}
-	on:open
-	on:close
-	on:click:button--primary={() => {
-		open = false;
-		newVice();
-	}}
->
-	<input bind:value={newViceName} />
-</Modal>
+		<SveltyPicker inputClasses="form-control" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
+	</Modal>
+	<Modal
+		bind:open
+		size="xs"
+		modalHeading="New Vice Name"
+		primaryButtonText="Confirm"
+		secondaryButtonText="Cancel"
+		on:click:button--secondary={() => (open = false)}
+		on:open
+		on:close
+		on:click:button--primary={() => {
+			open = false;
+			newVice();
+		}}
+	>
+		<input bind:value={newViceName} />
+	</Modal>
+</div>
 
 <style>
 	h1 {

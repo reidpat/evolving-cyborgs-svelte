@@ -22,7 +22,7 @@ async function signOut() {
 </script>
 
 <div>
-    <button class="button block" on:click={signOut} disabled={loading}>
+    <button class="btn btn-primary" on:click={signOut} disabled={loading}>
       Sign Out
     </button>
 </div>

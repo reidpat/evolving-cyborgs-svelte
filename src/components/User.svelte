@@ -74,6 +74,7 @@
 		background-color: #1d1c1f;
 		color: #c4c2b9;
 		padding: 10px;
+		z-index: 4;
 	}
 	.xp-bar {
 		flex: 1;

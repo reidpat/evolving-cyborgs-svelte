@@ -1,10 +1,11 @@
 <script>
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { habitStore, user } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
-	import { Button, Modal, Loading } from 'carbon-components-svelte';
-	import Add16 from 'carbon-icons-svelte/lib/Add16';
+	import Fa from 'svelte-fa';
+	import { faCircleMinus, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
+	import { ProgressBar } from 'carbon-components-svelte';
 	const dispatch = createEventbusDispatcher();
 
 	let habits = [];
@@ -14,7 +15,6 @@
 			habits = [...$habitStore];
 		}
 	}
-	let open = false;
 
 	let loading = false;
 
@@ -32,7 +32,7 @@
 			.from(`habits:user_id=eq.${userID}`)
 			.on('*', (payload) => {
 				let newHabit = matchHabit(payload.new);
-				if(!loading){
+				if (!loading) {
 					updateHabitUI(newHabit);
 				}
 				//updateHabitsData();
@@ -106,9 +106,9 @@
 				newGoal = goalArray[goalIndex + 1];
 				//dispatch('habitGoal', { goal, name, progress });
 			}
-				if(!loading){
-					dispatch('habitGoal', { goal: newGoal, name, progress });
-				}
+			if (!loading) {
+				dispatch('habitGoal', { goal: newGoal, name, progress });
+			}
 		}
 
 		// lowers the goal if progress falls below previous goal
@@ -125,12 +125,12 @@
 	}
 
 	function updateTimeline(habit) {
-		if(habit.timeline.length > 1){
-			habit.timeline.sort((a,b) => {
+		if (habit.timeline.length > 1) {
+			habit.timeline.sort((a, b) => {
 				let dateA = new Date(a.created_at);
 				let dateB = new Date(b.created_at);
-				return dateB - dateA
-			})
+				return dateB - dateA;
+			});
 		}
 		//console.log(habit.name);
 		// let streak = calculateStreak(habit.timeline);
@@ -172,21 +172,19 @@
 		habitStore.set(habits);
 	}
 
-	function calculateStreak(timeline){
+	function calculateStreak(timeline) {
 		let prevDate = new Date();
 		let streak = 0;
-		for(let i = 0; i < timeline.length; i++){
+		for (let i = 0; i < timeline.length; i++) {
 			let currDate = new Date(timeline[i].created_at);
-			let dateGap = getDayGapInDates(prevDate, currDate)
-			console.log('prev', prevDate, 'curr', currDate, 'gap', dateGap)
-			if(dateGap == 1){
+			let dateGap = getDayGapInDates(prevDate, currDate);
+			console.log('prev', prevDate, 'curr', currDate, 'gap', dateGap);
+			if (dateGap == 1) {
 				streak++;
-			}
-			else if (dateGap != 0){
-				break
-			}
-			else {
-				if (i == 0){
+			} else if (dateGap != 0) {
+				break;
+			} else {
+				if (i == 0) {
 					streak++;
 				}
 			}
@@ -200,17 +198,16 @@
 			habits = habits.map((habit) => {
 				let newHabit = habit;
 				let timeline = habit.timeline;
-				
+
 				if (timeline.length > 0) {
-					
-					let date = new Date(timeline[timeline.length - 1].created_at);
+					let date = new Date(timeline[0].created_at);
 					let gapInDates = getDayGapInDates(date, new Date());
 
 					if (gapInDates >= 2) {
 						newHabit = { ...newHabit, is_complete: false };
 					} else if (gapInDates == 1) {
 						newHabit = { ...newHabit, is_complete: false };
-					}else if (gapInDates == 0){
+					} else if (gapInDates == 0) {
 						newHabit.is_complete = true;
 					}
 					console.log(habit.name);
@@ -219,7 +216,7 @@
 						.from('habits')
 						.update({ ...newHabit })
 						.eq('id', habit.id);
-				}else{
+				} else {
 					newHabit.streak = timeline.length;
 				}
 
@@ -238,7 +235,14 @@
 	}
 
 	async function completeHabit(habit) {
-		if (!loading && !(habit.is_complete && habit.timeline.length > 1 && getDayGapInDates(new Date(), new Date(habit.timeline[habit.timeline.length - 1])) == 0)) {
+		if (
+			!loading &&
+			!(
+				!habit.is_complete &&
+				habit.timeline.length > 0 &&
+				getDayGapInDates(new Date(), new Date(habit.timeline[0].created_at)) == 0
+			)
+		) {
 			let streak;
 			let goalProgress;
 			if (habit.is_complete) {
@@ -281,7 +285,6 @@
 					.update({ is_complete: newHabit.is_complete, streak, goal: newHabit.goal })
 					.eq('id', habit.id);
 
-
 				updateHabitUI(habit_update[0], [...newHabit.timeline, timeline[0]]);
 			} else {
 				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
@@ -291,15 +294,16 @@
 					const { data: timeline_update, error } = await supabase
 						.from('timeline')
 						.delete()
-						.eq('id', newHabit.timeline[newHabit.timeline.length - 1].id);
+						.eq('id', newHabit.timeline[0].id);
 
 					if (error) {
 						console.log('delete-error', error);
 					}
 				}
-
-				let timeline = [...newHabit.timeline].slice(0, newHabit.timeline.length - 1);
-				updateHabitUI(newHabit, timeline);
+				if (newHabit.timeline.length > 0) {
+					newHabit.timeline.shift();
+				}
+				updateHabitUI(newHabit, newHabit.timeline);
 
 				const { data: habit_update } = await supabase
 					.from('habits')
@@ -318,42 +322,87 @@
 
 		newHabitName = '';
 	}
+
+	let open = false;
 </script>
 
 <div class="content-container">
 	<h1>Habits</h1>
 	{#if habits}
 		{#each habits as habit (habit.id)}
-			<div class="card">
-				<h2>{habit.name}</h2>
-				{#if habit.is_complete}
-					<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
-						check_box
-					</span>
-				{:else}
-					<span on:click={completeHabit(habit)} class="material-icons-outlined clickable">
-						check_box_outline_blank
-					</span>
-				{/if}
-				<p>Streak: {habit.streak}</p>
+			<div class="card bg-base-100 shadow-xl card-compact">
+				<div class="card-body">
+					<div class="habit-upper">
+						<div>
+							<h2 class="card-title">{habit.name}</h2>
 
-				{#if habit.timeline && habit.timeline.length > 0}
-					<p>Goal: {habit.goalProgress}/{habit.goal}</p>
-				{:else if !loading}
-					<p>Never Completed</p>
-				{/if}
+							<p>Streak: {habit.streak}</p>
+						</div>
+
+						<div class="checkbox">
+							{#if habit.is_complete}
+								<span on:click={completeHabit(habit)}><Fa color="hsl(var(--a))"  icon={faCircleCheck} translateX={-0.5}/></span>
+							{:else}
+								<span on:click={completeHabit(habit)}><Fa color="hsl(var(--pc))" icon={faCircleMinus} translateX={-0.5}/></span>
+							{/if}
+						</div>
+					</div>
+
+					<ProgressBar
+						class="progress progress-accent mt-2"
+						value={habit.goalProgress}
+						max={habit.goal}
+					/>
+					<p class="goal-info">Goal: {habit.goalProgress}/{habit.goal}</p>
+				</div>
 			</div>
 		{/each}
 	{/if}
-	{#if loading}
-		<Loading withOverlay={false} small />
-	{/if}
-	<div class="add-button">
-		<Button on:click={() => (open = true)} iconDescription="New Habit" icon={Add16}
-			>Add New Habit</Button
+	<div class="add-button ">
+		<button
+			class="btn btn-primary"
+			on:click={() => {
+				open = true;
+				console.log(open);
+			}}>Add New Habit</button
 		>
 	</div>
-	<Modal
+	<div
+		class="modal modal-bottom sm:modal-middle"
+		class:modal-open={open}
+		on:click|self={() => {
+			open = false;
+		}}
+	>
+		<div class="modal-box">
+			<label
+				for="my-modal-7"
+				class="btn btn-sm btn-circle absolute right-2 top-2"
+				on:click={() => {
+					open = false;
+				}}>✕</label
+			>
+			<label for="habit-name" class="label">
+				<span class="label-text">New Habit Name</span>
+			</label>
+			<input
+				id="habit-name"
+				type="text"
+				placeholder="Type here"
+				class="input input-bordered input-primary w-full max-w-xs"
+				bind:value={newHabitName}
+			/>
+			<div class="modal-action">
+				<button
+					on:click={() => {
+						open = false;
+					}}
+					class="btn btn-primary modal-button">Create Habit</button
+				>
+			</div>
+		</div>
+	</div>
+	<!-- <Modal
 		bind:open
 		size="xs"
 		modalHeading="New Habit Name"
@@ -368,7 +417,7 @@
 		}}
 	>
 		<input bind:value={newHabitName} />
-	</Modal>
+	</Modal> -->
 </div>
 
 <style>
@@ -380,4 +429,16 @@
 		display: flex;
 		justify-content: center;
 	}
+	.goal-info {
+		margin: auto;
+		text-align: center;
+	}
+	.habit-upper {
+		display: flex;
+		justify-content: space-between;
+	}
+	.checkbox span {
+		font-size: 50px;
+	}
+
 </style>

@@ -1,16 +1,24 @@
-.content-container{
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+body{
+    background-color: #191d24;
+    height: 100vh;
+}
+.content-container{
     max-width: 1200px;
     margin: auto;
-    margin-bottom: 150px;
-    margin-top: 100px;
+    min-width: 250px;
+    padding: 80px 30px;
+    height: 100%;
 }
 .card {
-    margin: 50px;
-    padding: 10px;
-    box-shadow: 1px 1px 1px 1px rgba(255, 255, 255, 0.452);
-    background-color: rgba(128, 128, 128, 0.411);
+    margin: 20px auto;
+    /* box-shadow: 1px 1px 1px 1px rgba(255, 255, 255, 0.452);
+    background-color: rgba(128, 128, 128, 0.411); */
     border-radius: 2px;
+    max-width: 800px;
 }
 .clickable {
     cursor: pointer;
@@ -18,9 +26,23 @@
 }
 .bx--progress-bar{
     flex: 1;
+    border-radius: 500px !important;
+}
+.bx--progress-bar__track{
+    border-radius: 500px !important;
 }
 
 body,html{
     margin:0px;
     padding:0px;
+}
+.bx--progress-bar__helper-text{
+    margin: auto;
+    text-align: center;
+}
+.content-container .bx--progress-bar__bar{
+	background-color: hsl(var(--a));	
+}
+.bx--modal-content{
+    max-width: 80%;
 }

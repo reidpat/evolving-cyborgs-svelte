@@ -90,8 +90,8 @@
 		habitGoalInfo = { ...event.detail };
 		addXp({
 			detail: {
-				xp: habitGoalInfo.progress * 2,
-				event: `reaching your goal of ${habitGoalInfo.goal} days on habit ${habitGoalInfo.name}`
+				xp: habitGoalInfo.progress * 50,
+				event: `reaching your goal of ${habitGoalInfo.progress} days on habit ${habitGoalInfo.name}`
 			}
 		});
 	}
@@ -106,7 +106,7 @@
 				<slot />
 			{/if}
 		</Eventbus>
-		<div class="modal modal-bottom sm:modal-middle" class:modal-open={open}>
+		<div class="modal modal-middle" class:modal-open={open}>
 			<div class="modal-box">
 				<p>
 					Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
@@ -116,12 +116,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal modal-bottom sm:modal-middle" class:modal-open={habitOpen}>
+		<div class="modal modal-middle" class:modal-open={habitOpen}>
 			<div class="modal-box">
 				{#if habitGoalInfo}
 					<p>
 						You just hit your goal of {habitGoalInfo.progress} days on {habitGoalInfo.name} and earned
-						an extra {habitGoalInfo.progress * 100} xp. Do you think you can keep it up and hit your
+						an extra {habitGoalInfo.progress * 50} xp. Do you think you can keep it up and hit your
 						next goal of {habitGoalInfo.goal} days?
 					</p>
 				{/if}

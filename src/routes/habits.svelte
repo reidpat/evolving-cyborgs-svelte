@@ -4,7 +4,10 @@
 	import { supabase } from '../supabaseClient';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
 	import AnimatedProgress from '../components/AnimatedProgress.svelte';
+	import AnimatedCheck from '../components/AnimatedCheck.svelte';
 	const dispatch = createEventbusDispatcher();
+	import {scale} from 'svelte/transition'
+	import { quintOut } from "svelte/easing";
 
 	let habits = [];
 
@@ -261,7 +264,7 @@
 			if (newHabit.is_complete) {
 				//add to timeline
 
-				let xp = (newHabit.streak + newHabit.goalProgress) * 100;
+				let xp = 100 + (newHabit.streak + newHabit.goalProgress) * 10;
 				dispatch('addXp', { xp: xp, event: habit.name });
 
 				// updateHabitUI(newHabit, [{
@@ -280,8 +283,9 @@
 
 				updateHabitUI(habit_update[0], [...newHabit.timeline, timeline[0]]);
 			} else {
-				let xp = newHabit.timeline[newHabit.timeline.length - 1].xp_awarded;
+				let xp = habit.timeline[0].xp_awarded;
 				dispatch('addXp', { xp: -xp, event: habit.name });
+				console.log(xp);
 
 				if (habit.timeline && habit.timeline.length > 0) {
 					const { data: timeline_update, error } = await supabase
@@ -293,8 +297,8 @@
 						console.log('delete-error', error);
 					}
 				}
-				if (newHabit.timeline.length > 0) {
-					newHabit.timeline.shift();
+				if (habit.timeline.length > 0) {
+					habit.timeline.shift();
 				}
 				updateHabitUI(newHabit, newHabit.timeline);
 
@@ -324,7 +328,7 @@
 	<h1>Habits</h1>
 	{#if habits}
 		{#each habits as habit (habit.id)}
-			<div class="card bg-base-100 shadow-xl card-compact">
+			<div class="card bg-base-100 shadow-xl card-compact" in:scale={{duration: 500}}>
 				<div class="card-body">
 					<div class="habit-upper">
 						<div>
@@ -335,13 +339,11 @@
 
 						<div class="checkbox">
 							{#if habit.is_complete}
-								<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2 text-accent rounded-full">
-									check_circle
-								</span>
+							<AnimatedCheck on:clicked={completeHabit(habit)} />
 							{:else}
-								<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2">
-									circle
-								</span>
+							<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2 rounded-full">
+								circle
+							</span>
 							{/if}
 						</div>
 					</div>

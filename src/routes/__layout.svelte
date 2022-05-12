@@ -23,6 +23,8 @@
 	import BottomNav from '../components/BottomNav.svelte';
 	import { onMount } from 'svelte';
 	import { Button, Modal } from 'carbon-components-svelte';
+	import AnimatedGoal from '../components/AnimatedGoal.svelte';
+	import AnimatedConfetti from '../components/AnimatedConfetti.svelte';
 
 	export let sessionInfo;
 
@@ -106,8 +108,11 @@
 				<slot />
 			{/if}
 		</Eventbus>
-		<div class="modal modal-middle" class:modal-open={open}>
-			<div class="modal-box">
+		<div class="modal modal-middle overflow-x-visible" class:modal-open={open}>
+			<div class="modal-box overflow-y-visible">
+				{#if open}
+					<AnimatedConfetti />
+				{/if}
 				<p>
 					Congratulations, you have now leveled up to {$profileStore.level}. Keep up the great work!
 				</p>
@@ -117,19 +122,23 @@
 			</div>
 		</div>
 		<div class="modal modal-middle" class:modal-open={habitOpen}>
-			<div class="modal-box">
+			<div class="modal-box" style="overflow-y: visible;">
 				{#if habitGoalInfo}
 					<p>
 						You just hit your goal of {habitGoalInfo.progress} days on {habitGoalInfo.name} and earned
-						an extra {habitGoalInfo.progress * 50} xp. Do you think you can keep it up and hit your
-						next goal of {habitGoalInfo.goal} days?
+						an extra {habitGoalInfo.progress * 50} xp. Do you think you can keep it up and hit your next
+						goal of {habitGoalInfo.goal} days?
 					</p>
+				{/if}
+				{#if habitOpen}
+					<AnimatedGoal />
 				{/if}
 				<div class="modal-action">
 					<label
 						for="my-modal-7"
 						on:click={() => {
 							habitOpen = false;
+							habitGoalInfo = null;
 						}}
 						class="btn">You Bet!</label
 					>

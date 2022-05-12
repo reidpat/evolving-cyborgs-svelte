@@ -8,6 +8,8 @@
 	import { createEventbusDispatcher } from 'svelte-eventbus';
 	import SveltyPicker from 'svelty-picker';
 	const dispatch = createEventbusDispatcher();
+	import {scale} from 'svelte/transition'
+	import { quintOut } from "svelte/easing";
 
 	let newViceName = '';
 	let open = false;
@@ -214,7 +216,7 @@
 <div class="content-container">
 	<h1>Vices</h1>
 	{#each vices as vice}
-		<div class="card bg-base-100 shadow-xl card-compact">
+		<div class="card bg-base-100 shadow-xl card-compact" in:scale={{duration: 500}}>
 			<div class="card-body">
 				<h2 class="text-4xl text-center">{vice.name}</h2>
 				<div tabindex="0" class="collapse collapse-arrow">

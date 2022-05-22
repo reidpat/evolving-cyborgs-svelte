@@ -34,12 +34,17 @@
 			})
 			.subscribe();
 	}
+
+
 </script>
 
 <div class="outer-nav">
 	<div class="inner-nav">
 		{#if profile}
-			<p class="font-bold m-3 text-3xl">{profile.username[0]}</p>
+			{#if profile.username}
+				<p class="font-bold m-3 text-3xl">{profile.username[0]}</p>
+			{/if}
+
 			<div class="xp-bar">
 				<p>Level: {profile.level} | XP: {profile.xp}/{profile.next_level_xp}</p>
 				<AnimatedProgress

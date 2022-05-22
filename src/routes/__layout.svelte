@@ -97,6 +97,22 @@
 			}
 		});
 	}
+
+	async function setNewUsername() {
+		try {
+			const { data:profile, error } = await supabase
+			.from('profiles')
+			.update({ username: newUserName })
+			.eq('id', $user.id);
+			profileStore.set(profile[0]);
+		} catch (error) {
+			console.log(error);
+		}
+		
+
+	}
+
+	let newUserName = '';
 </script>
 
 <SvelteToast />
@@ -108,6 +124,30 @@
 				<slot />
 			{/if}
 		</Eventbus>
+		{#if $profileStore && !$profileStore.username}
+		<div class="modal modal-accent sm:modal-middle" class:modal-open={true}>
+			<div class="modal-box">
+				<label for="user-name" class="label">
+					<span class="label-text">Set Username</span>
+				</label>
+				<input
+					id="user-name"
+					type="text"
+					placeholder="Type here"
+					class="input input-bordered input-primary w-full max-w-xs"
+					bind:value={newUserName}
+				/>
+				<div class="modal-action">
+					<button
+						on:click={() => {
+							setNewUsername();
+						}}
+						class="btn btn-primary modal-button">Set Username</button
+					>
+				</div>
+			</div>
+		</div>
+		{/if}
 		<div class="modal modal-middle overflow-x-visible" class:modal-open={open}>
 			<div class="modal-box overflow-y-visible">
 				{#if open}

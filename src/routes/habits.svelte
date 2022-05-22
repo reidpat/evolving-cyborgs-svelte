@@ -436,7 +436,4 @@
 	.checkbox span {
 		font-size: 50px;
 	}
-	progress{
-		width: 100%;
-	}
 </style>

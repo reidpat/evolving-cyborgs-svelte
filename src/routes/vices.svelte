@@ -311,8 +311,8 @@
 				<p class="card-title">Reset {currentVice.name}</p>
 			{/if}
 			
-			<SveltyPicker inputClasses="form-control input input-primary" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
-			<label>Choose date and time</label>
+			<SveltyPicker id="time-picker" inputClasses="form-control input input-primary" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
+			<label for="time-picker">Choose date and time</label>
 			<div class="modal-action">
 				<button
 					on:click={() => {

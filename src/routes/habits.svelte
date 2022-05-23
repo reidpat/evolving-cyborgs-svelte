@@ -7,7 +7,6 @@
 	import AnimatedCheck from '../components/AnimatedCheck.svelte';
 	const dispatch = createEventbusDispatcher();
 	import {scale} from 'svelte/transition'
-	import { quintOut } from "svelte/easing";
 
 	let habits = [];
 
@@ -398,32 +397,11 @@
 			</div>
 		</div>
 	</div>
-	<!-- <Modal
-		bind:open
-		size="xs"
-		modalHeading="New Habit Name"
-		primaryButtonText="Confirm"
-		secondaryButtonText="Cancel"
-		on:click:button--secondary={() => (open = false)}
-		on:open
-		on:close
-		on:click:button--primary={() => {
-			open = false;
-			newHabit();
-		}}
-	>
-		<input bind:value={newHabitName} />
-	</Modal> -->
 </div>
 
 <style>
 	h1 {
 		text-align: center;
-	}
-	.add-button {
-		margin-left: auto;
-		display: flex;
-		justify-content: center;
 	}
 	.goal-info {
 		margin: auto;

@@ -13,8 +13,8 @@
 		class:bg-primary={currentTab === '/habits'}
 		class="tab tab-lg">Habits</a
 	>
-	<a href="/vices" class:tab-active={currentTab === '/vices'} class="tab tab-lg">Vices</a
-	>
+	<a href="/vices" class:tab-active={currentTab === '/vices'} class="tab tab-lg">Vices</a>
+	<a href="/friends" class:tab-active={currentTab === '/friends'} class="tab tab-lg">Friends</a>
 </div>
 
 <style lang="scss">
@@ -24,6 +24,7 @@
 		display: flex;
 		justify-content: center;
 		width: 100%;
-		background-color: #1d1c1f;
+		background-color: hsl(var(--b2));
+		border-radius: 0px;
 	}
 </style>

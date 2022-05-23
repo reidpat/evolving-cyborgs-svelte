@@ -5,6 +5,7 @@
 body{
     background-color: #191d24;
     height: 100vh;
+    min-width: 250px;
 }
 .content-container{
     max-width: 1200px;
@@ -48,4 +49,9 @@ body,html{
 }
 .progress-value {
     width: 100%;
+}
+.add-button {
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
 }

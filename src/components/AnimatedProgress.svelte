@@ -13,7 +13,7 @@
 
 </script>
 
-<progress class="progress w-56  bg-neutral {classColor}" value={$valueTween} max={$maxTween}></progress>
+<progress class="progress w-56  bg-base-300 {classColor}" value={$valueTween} max={$maxTween}></progress>
 
 <style>
     progress{

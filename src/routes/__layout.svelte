@@ -13,7 +13,7 @@
 </script>
 
 <script>
-	import User from '../components/User.svelte';
+	import User from '../components/TopBar.svelte';
 
 	import '../app.css';
 	import { user, profileStore } from '../sessionStore';
@@ -25,6 +25,7 @@
 	import AnimatedGoal from '../components/AnimatedGoal.svelte';
 	import AnimatedConfetti from '../components/AnimatedConfetti.svelte';
 	import UserReports from '../components/UserReports.svelte';
+	import TopBar from '../components/TopBar.svelte';
 
 	export let sessionInfo;
 
@@ -125,12 +126,12 @@
 
 <SvelteToast />
 <Eventbus on:userReport={userReport}>
-	<User />
+	<TopBar />
 	<UserReports bind:type={reportType} bind:open={reportOpen}/>
 </Eventbus>
 
 {#if $user}
-	<div class="main-content-container bg-neutral">
+	<div class="main-content-container">
 		<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>
 			{#if $user}
 				<slot />

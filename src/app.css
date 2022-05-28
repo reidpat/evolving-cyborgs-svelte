@@ -13,6 +13,7 @@ body{
     min-width: 250px;
     padding: 100px 30px;
     height: 100%;
+    width: 100;
     background-color: hsl(var(--b3));
 }
 .card {

@@ -2,10 +2,10 @@
 	import { user, profileStore } from '../sessionStore';
 
 	import SignIn from './SignIn.svelte';
-	import SignOut from './SignOut.svelte';
+
 	import AnimatedProgress from './AnimatedProgress.svelte';
 	import { supabase } from '../supabaseClient';
-	import { ProgressBar } from 'carbon-components-svelte';
+	import TopMenu from './TopMenu.svelte';
 
 	let profile;
 
@@ -64,7 +64,7 @@
 		{/if}
 		<div>
 			{#if $user}
-				<SignOut />
+				<TopMenu />
 			{:else}
 				<SignIn />
 			{/if}

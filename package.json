@@ -38,7 +38,7 @@
     "@supabase/supabase-js": "^1.30.0",
     "cookie": "^0.5.0",
     "daisy": "^0.2.0",
-    "daisyui": "^2.14.3",
+    "daisyui": "^2.15.1",
     "svelte-eventbus": "^0.2.0",
     "svelty-picker": "^1.2.4",
     "ui": "^0.2.4"

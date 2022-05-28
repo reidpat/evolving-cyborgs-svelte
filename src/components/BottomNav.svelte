@@ -1,11 +1,13 @@
 <script>
 	import { page } from '$app/stores';
+	import {user} from '../sessionStore'
 	let currentTab = '';
 	$: {
 		currentTab = $page.url.pathname;
 	}
 </script>
 
+{#if $user}
 <div id="bottom-nav-wrapper" class="tabs tabs-boxed">
 	<a
 		href="/habits"
@@ -16,6 +18,8 @@
 	<a href="/vices" class:tab-active={currentTab === '/vices'} class="tab tab-lg">Vices</a>
 	<a href="/friends" class:tab-active={currentTab === '/friends'} class="tab tab-lg">Friends</a>
 </div>
+{/if}
+
 
 <style lang="scss">
 	#bottom-nav-wrapper {

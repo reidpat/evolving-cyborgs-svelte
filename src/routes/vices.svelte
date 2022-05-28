@@ -66,7 +66,8 @@
 			let { data, error, status } = await supabase
 				.from('vices')
 				.select(`id, created_at, best, last_award, total,name, timeline(id, created_at)`)
-				.eq('user_id', $user.id);
+				.eq('user_id', $user.id)
+				.order('created_at', 'ascending');
 			Vices = data;
 		}
 		vices = Vices.map((vice) => {

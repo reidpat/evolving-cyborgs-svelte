@@ -159,7 +159,8 @@
 			.select(
 				`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded)`
 			)
-			.eq('user_id', $user.id);
+			.eq('user_id', $user.id)
+			.order('created_at', 'ascending');
 
 		habits = Habits.map((habit) => {
 			return updateTimeline(habit);

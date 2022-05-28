@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body{
-    background-color: #191d24;
+    background-color: hsl(var(--b3));
     height: 100vh;
     min-width: 250px;
 }
@@ -13,6 +13,7 @@ body{
     min-width: 250px;
     padding: 100px 30px;
     height: 100%;
+    background-color: hsl(var(--b3));
 }
 .card {
     margin: 20px auto;
@@ -36,6 +37,7 @@ body{
 body,html{
     margin:0px;
     padding:0px;
+    color: hsl(var(--bc));
 }
 .bx--progress-bar__helper-text{
     margin: auto;

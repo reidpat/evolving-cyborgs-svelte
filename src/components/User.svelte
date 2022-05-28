@@ -86,7 +86,7 @@
 		width: 100%;
 		margin: auto;
 		background-color: hsl(var(--b2));
-		color: #c4c2b9;
+		color: hsl(var(--bc));
 		padding: 10px;
 		z-index: 4;
 	}

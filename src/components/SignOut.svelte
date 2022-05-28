@@ -26,7 +26,7 @@
 
 <div>
 	<div class="dropdown dropdown-end">
-		<label tabindex="0" class="btn m-1"><span class="material-symbols-outlined"> menu </span></label
+		<label tabindex="0" class="btn btn-outline m-1"><span class="material-symbols-outlined"> menu </span></label
 		>
 		<ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
 			<li><div on:click={signOut} disabled={loading}>Sign Out</div></li>

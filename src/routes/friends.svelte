@@ -46,8 +46,6 @@
 			requests = requests;
 			sent = sent;
 
-			console.log('friends', friends);
-			console.log('requests', requests);
 		} catch (error) {
 			console.log(error);
 		}

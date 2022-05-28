@@ -22,9 +22,9 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import BottomNav from '../components/BottomNav.svelte';
 	import { onMount } from 'svelte';
-	import { Button, Modal } from 'carbon-components-svelte';
 	import AnimatedGoal from '../components/AnimatedGoal.svelte';
 	import AnimatedConfetti from '../components/AnimatedConfetti.svelte';
+	import UserReports from '../components/UserReports.svelte';
 
 	export let sessionInfo;
 
@@ -112,11 +112,23 @@
 
 	}
 
+	function userReport(event){
+		reportType = event.detail.type;
+		reportOpen = true;
+	}
+
+	let reportType = "";
+	let reportOpen = false;
+
 	let newUserName = '';
 </script>
 
 <SvelteToast />
-<User />
+<Eventbus on:userReport={userReport}>
+	<User />
+	<UserReports bind:type={reportType} bind:open={reportOpen}/>
+</Eventbus>
+
 {#if $user}
 	<div class="main-content-container bg-neutral">
 		<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>

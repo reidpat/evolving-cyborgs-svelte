@@ -206,10 +206,12 @@
 			{/each}
 		{/if}
 	{/if}
-
-	<button class="btn btn-accent btn-outline add-button" on:click={() => (open = true)}
-		>Add a new friend</button
-	>
+	<div class="add-button">
+		<button class="btn btn-accent btn-outline" on:click={() => (open = true)}
+			>Add a new friend</button
+		>
+	</div>
+	
 	<div
 		class="modal modal-accent sm:modal-middle"
 		class:modal-open={open}

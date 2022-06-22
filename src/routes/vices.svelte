@@ -81,7 +81,8 @@
 		let xp = 0;
 		let difference = days - last;
 		for (let i = last; i <= days; i++) {
-			xp += 100 + i * 10;
+			let value = Math.min(i, 100);
+			xp += 100 + value * 10;
 		}
 		dispatch('addXp', { xp: xp, event: vice.name });
 
@@ -139,6 +140,10 @@
 		let reset = new Date(dateTime);
 		if (last > reset) {
 			console.log('cannot select a date that is before a previous reset');
+			return;
+		}
+		if(reset > new Date()){
+			console.log('cannot select a future date');
 			return;
 		}
 		let currentSeconds = reset - last;

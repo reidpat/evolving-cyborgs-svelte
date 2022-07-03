@@ -199,5 +199,24 @@
 			</div>
 		</div>
 	</div>
+{:else}
+<div class="hero min-h-screen bg-base-300">
+	<div class="hero-content text-center">
+	  <div class="max-w-md">
+		<h1 class="text-5xl font-bold">Evolving Cyborgs</h1>
+		<p class="py-6">What would it be like if your technology worked <b>for</b> you instead of trying to exploit you? </p>
+		<img class="m-auto" src="../cyborg.svg" alt="cyborg icon">
+		<button class="btn btn-disabled btn-outline mt-5">Sign Up Now</button>
+		<p class="mt-5">Evolving Cyborgs is not accepting new users at this time.</p>
+	  </div>
+	</div>
+  </div>
 {/if}
 <BottomNav />
+
+
+<style>
+	img{
+		max-width: 300px;
+	}
+</style>

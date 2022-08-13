@@ -19,7 +19,7 @@
 	<a href="/friends" class:tab-active={currentTab === '/friends'} class="tab tab-lg">Friends</a>
 	<div class="dropdown dropdown-top dropdown-end">
 		<label tabindex="0" class="btn m-1">^</label>
-		<ul tabindex="0" class="dropdown-content menu p-2">
+		<ul tabindex="0" class="dropdown-content menu p-2 bg-base-200 rounded-md">
 			<a href="/timeline" class:tab-active={currentTab === '/timeline'} class="tab tab-lg">Timeline</a>
 		</ul>
 	  </div>

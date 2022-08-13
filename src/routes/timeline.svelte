@@ -15,7 +15,8 @@
     *, habit(name), vice(name) `
 			)
 			.eq('user_id', $user.id)
-            .gt('created_at', oneWeekAgo.toISOString());
+            .gt('created_at', oneWeekAgo.toISOString())
+            .order('created_at', {ascending: true});
 		timeline = data.map((i) => {
 			let name;
 			let type;

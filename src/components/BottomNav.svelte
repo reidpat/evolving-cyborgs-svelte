@@ -17,6 +17,13 @@
 	>
 	<a href="/vices" class:tab-active={currentTab === '/vices'} class="tab tab-lg">Vices</a>
 	<a href="/friends" class:tab-active={currentTab === '/friends'} class="tab tab-lg">Friends</a>
+	<div class="dropdown dropdown-top dropdown-end">
+		<label tabindex="0" class="btn m-1">^</label>
+		<ul tabindex="0" class="dropdown-content menu p-2">
+			<a href="/timeline" class:tab-active={currentTab === '/timeline'} class="tab tab-lg">Timeline</a>
+		</ul>
+	  </div>
+	
 </div>
 {/if}
 

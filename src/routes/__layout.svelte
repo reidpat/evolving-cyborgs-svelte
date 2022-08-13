@@ -200,7 +200,7 @@
 		</div>
 	</div>
 {:else}
-<div class="hero min-h-screen bg-base-300">
+<div class="hero min-h-screen bg-base-300 pt-20">
 	<div class="hero-content text-center">
 	  <div class="max-w-md">
 		<h1 class="text-5xl font-bold">Evolving Cyborgs</h1>

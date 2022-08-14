@@ -3,6 +3,7 @@
 	import { friendStore, user } from '../sessionStore';
 	import { onMount } from 'svelte';
 	import AnimatedProgress from '../components/AnimatedProgress.svelte';
+	import Momentum from '../components/Momentum.svelte';
 
 	let friends = [];
 	let requests = [];
@@ -125,16 +126,7 @@
 							<h2 class="card-title">{friend.user.username}</h2>
 						</div>
 						<div class="flex">
-							<div
-								class="radial-progress text-accent"
-								style="--value:{(friend.user.momentum - Math.floor(friend.user.momentum)) * 100};"
-							>
-								{#if friend.user.momentum % 1 == 0}
-									{Math.floor(friend.user.momentum)}.00x
-								{:else}
-									{friend.user.momentum}x
-								{/if}
-							</div>
+							<Momentum profile={friend.user} />
 							<div class="xp-bar">
 								<p>Level: {friend.user.level} | XP: {friend.user.xp}/{friend.user.next_level_xp}</p>
 								<AnimatedProgress

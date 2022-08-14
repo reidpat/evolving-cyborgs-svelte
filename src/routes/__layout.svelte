@@ -58,7 +58,6 @@
 
 	async function addXp(event) {
 		let momentum = ((Math.floor($profileStore.momentum * 100) / 100));
-		console.log(Math.round(momentum % 1 * 100));
 		let newXp = Math.round(event.detail.xp * momentum);
 		let xp = $profileStore.xp + newXp;
 		let next_level_xp = $profileStore.next_level_xp;

@@ -1,6 +1,6 @@
 <script>
 	import { user, profileStore } from '../sessionStore';
-	import ProgressCircle from 'svelte-progresscircle';
+	import Momentum from '../components/Momentum.svelte';
 
 	import SignIn from './SignIn.svelte';
 
@@ -40,12 +40,7 @@
 <div class="outer-nav">
 	<div class="inner-nav">
 		{#if profile}
-			<div class="radial-progress text-accent bg-base-100" style="--value:{Math.round(((profile.momentum * 100) % 1) * 100)};">
-				<div class="flex flex-col justify-center">
-					<span class="text-center text-lg font-semibold">+{Math.round((Math.floor($profileStore.momentum * 100) / 100) % 1 * 100)}%</span>
-					<span class="text-center text-2xs">{Math.round(((profile.momentum * 100) % 1) * 10)}/10</span>
-				</div>
-			</div>
+			<Momentum profile={profile} />
 			<!-- <ProgressCircle max="100" value="10">
 				<span>10</span>
 				<span>100</span>

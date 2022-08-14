@@ -127,7 +127,7 @@
 						</div>
 						<div class="flex">
 							<Momentum profile={friend.user} />
-							<div class="xp-bar">
+							<div class="xp-bar ml-5">
 								<p>Level: {friend.user.level} | XP: {friend.user.xp}/{friend.user.next_level_xp}</p>
 								<AnimatedProgress
 									classColor="progress-primary"

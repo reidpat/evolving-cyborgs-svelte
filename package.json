@@ -40,6 +40,7 @@
     "daisy": "^0.2.0",
     "daisyui": "^2.15.1",
     "svelte-eventbus": "^0.2.0",
+    "svelte-progresscircle": "^0.3.0",
     "svelty-picker": "^1.2.4",
     "theme-change": "^2.0.2",
     "ui": "^0.2.4"

@@ -1,8 +1,6 @@
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -16,17 +14,20 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var stdin_exports = {};
 __export(stdin_exports, {
-  css: () => css,
-  entry: () => entry,
-  js: () => js,
-  module: () => module2
+  default: () => Timeline
 });
 module.exports = __toCommonJS(stdin_exports);
-var module2 = __toESM(require("../entries/pages/__layout.svelte.js"));
-const entry = "pages/__layout.svelte-524c05bc.js";
-const js = ["pages/__layout.svelte-524c05bc.js", "chunks/index-e545626c.js", "chunks/supabaseClient-77c3643b.js", "chunks/index-11e3d9f4.js", "chunks/AnimatedProgress-213e51ca.js", "chunks/index-b4b89c02.js"];
-const css = ["assets/pages/__layout.svelte-4c2a829e.css", "assets/AnimatedProgress-2604543e.css"];
+var import_index_dc9adc7d = require("../../chunks/index-dc9adc7d.js");
+var import_sessionStore_76a26766 = require("../../chunks/sessionStore-76a26766.js");
+var import_supabaseClient_51bc0a25 = require("../../chunks/supabaseClient-51bc0a25.js");
+var import_supabase_js = require("@supabase/supabase-js");
+const Timeline = (0, import_index_dc9adc7d.c)(($$result, $$props, $$bindings, slots) => {
+  let $$unsubscribe_user;
+  $$unsubscribe_user = (0, import_index_dc9adc7d.b)(import_sessionStore_76a26766.u, (value) => value);
+  $$unsubscribe_user();
+  return `<div class="${"content-container"}"><h1 class="${"center"}">Timeline</h1>
+	<div class="${"overflow-x-auto"}">${``}</div></div>`;
+});

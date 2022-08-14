@@ -20,7 +20,7 @@ __export(stdin_exports, {
   default: () => Offline
 });
 module.exports = __toCommonJS(stdin_exports);
-var import_index_df821055 = require("../../chunks/index-df821055.js");
-const Offline = (0, import_index_df821055.c)(($$result, $$props, $$bindings, slots) => {
+var import_index_dc9adc7d = require("../../chunks/index-dc9adc7d.js");
+const Offline = (0, import_index_dc9adc7d.c)(($$result, $$props, $$bindings, slots) => {
   return `<p>We are offline</p>`;
 });

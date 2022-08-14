@@ -4,7 +4,7 @@
     "src": ".svelte-kit/build/index.js",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js"
+      "_index-dc9adc7d.js"
     ]
   },
   "src/routes/signin.js": {
@@ -20,13 +20,14 @@
     "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js",
-      "_lib-9f96b971.js",
+      "_index-dc9adc7d.js",
+      "_sessionStore-76a26766.js",
       "_supabaseClient-51bc0a25.js",
-      "_ProgressBar-b583b79a.js"
+      "_AnimatedProgress-7cdfcdfd.js",
+      "_lib-e7b867a6.js"
     ],
     "css": [
-      "assets/entries/pages/__layout.svelte-d4bb6f01.css"
+      "assets/entries/pages/__layout.svelte-3efffdc0.css"
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
@@ -34,7 +35,7 @@
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js"
+      "_index-dc9adc7d.js"
     ]
   },
   "src/routes/index.svelte": {
@@ -42,13 +43,39 @@
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js",
-      "_lib-9f96b971.js",
+      "_index-dc9adc7d.js"
+    ]
+  },
+  "src/routes/productivity.svelte": {
+    "file": "entries/pages/productivity.svelte.js",
+    "src": "src/routes/productivity.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-dc9adc7d.js"
+    ]
+  },
+  "src/routes/timeline.svelte": {
+    "file": "entries/pages/timeline.svelte.js",
+    "src": "src/routes/timeline.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-dc9adc7d.js",
+      "_sessionStore-76a26766.js",
+      "_supabaseClient-51bc0a25.js"
+    ]
+  },
+  "src/routes/friends.svelte": {
+    "file": "entries/pages/friends.svelte.js",
+    "src": "src/routes/friends.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-dc9adc7d.js",
       "_supabaseClient-51bc0a25.js",
-      "_ProgressBar-b583b79a.js"
+      "_sessionStore-76a26766.js",
+      "_AnimatedProgress-7cdfcdfd.js"
     ],
     "css": [
-      "assets/entries/pages/index.svelte-0cd998fa.css"
+      "assets/entries/pages/friends.svelte-ca502d48.css"
     ]
   },
   "src/routes/offline.svelte": {
@@ -56,7 +83,22 @@
     "src": "src/routes/offline.svelte",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js"
+      "_index-dc9adc7d.js"
+    ]
+  },
+  "src/routes/habits.svelte": {
+    "file": "entries/pages/habits.svelte.js",
+    "src": "src/routes/habits.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-dc9adc7d.js",
+      "_sessionStore-76a26766.js",
+      "_supabaseClient-51bc0a25.js",
+      "_lib-e7b867a6.js",
+      "_AnimatedProgress-7cdfcdfd.js"
+    ],
+    "css": [
+      "assets/entries/pages/habits.svelte-ef47903e.css"
     ]
   },
   "src/routes/vices.svelte": {
@@ -64,33 +106,41 @@
     "src": "src/routes/vices.svelte",
     "isEntry": true,
     "imports": [
-      "_index-df821055.js",
-      "_lib-9f96b971.js",
-      "_supabaseClient-51bc0a25.js"
+      "_index-dc9adc7d.js",
+      "_sessionStore-76a26766.js",
+      "_supabaseClient-51bc0a25.js",
+      "_lib-e7b867a6.js"
     ],
     "css": [
-      "assets/entries/pages/vices.svelte-33ef1473.css"
+      "assets/entries/pages/vices.svelte-3c8e3756.css"
     ]
   },
-  "_index-df821055.js": {
-    "file": "chunks/index-df821055.js"
+  "_index-dc9adc7d.js": {
+    "file": "chunks/index-dc9adc7d.js"
   },
   "_supabaseClient-51bc0a25.js": {
     "file": "chunks/supabaseClient-51bc0a25.js"
   },
-  "_lib-9f96b971.js": {
-    "file": "chunks/lib-9f96b971.js",
+  "_sessionStore-76a26766.js": {
+    "file": "chunks/sessionStore-76a26766.js",
     "imports": [
-      "_index-df821055.js"
-    ],
-    "css": [
-      "assets/lib-4b1d0946.css"
+      "_index-dc9adc7d.js"
     ]
   },
-  "_ProgressBar-b583b79a.js": {
-    "file": "chunks/ProgressBar-b583b79a.js",
+  "_AnimatedProgress-7cdfcdfd.js": {
+    "file": "chunks/AnimatedProgress-7cdfcdfd.js",
     "imports": [
-      "_index-df821055.js"
+      "_index-dc9adc7d.js",
+      "_sessionStore-76a26766.js"
+    ],
+    "css": [
+      "assets/AnimatedProgress-6b47aed3.css"
+    ]
+  },
+  "_lib-e7b867a6.js": {
+    "file": "chunks/lib-e7b867a6.js",
+    "imports": [
+      "_index-dc9adc7d.js"
     ]
   }
 }

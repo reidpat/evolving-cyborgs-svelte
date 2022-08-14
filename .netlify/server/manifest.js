@@ -25,16 +25,20 @@ __export(stdin_exports, {
 module.exports = __toCommonJS(stdin_exports);
 const manifest = {
   appDir: "_app",
-  assets: /* @__PURE__ */ new Set(["cyborg.png", "favicon.png", "manifest.json", "meditation_192.png", "meditation_512.png", "service-worker.js"]),
+  assets: /* @__PURE__ */ new Set(["cyborg.png", "cyborg.svg", "favicon.png", "manifest.json", "meditation_192.png", "meditation_512.png", "thinking.svg", "service-worker.js"]),
   _: {
-    mime: { ".png": "image/png", ".json": "application/json" },
-    entry: { "file": "start-a07f1c08.js", "js": ["start-a07f1c08.js", "chunks/index-d9cb6f28.js", "chunks/index-339123f0.js"], "css": [] },
+    mime: { ".png": "image/png", ".svg": "image/svg+xml", ".json": "application/json" },
+    entry: { "file": "start-182b876c.js", "js": ["start-182b876c.js", "chunks/index-e545626c.js", "chunks/index-11e3d9f4.js"], "css": [] },
     nodes: [
       () => Promise.resolve().then(() => __toESM(require("./nodes/0.js"))),
       () => Promise.resolve().then(() => __toESM(require("./nodes/1.js"))),
       () => Promise.resolve().then(() => __toESM(require("./nodes/2.js"))),
       () => Promise.resolve().then(() => __toESM(require("./nodes/3.js"))),
-      () => Promise.resolve().then(() => __toESM(require("./nodes/4.js")))
+      () => Promise.resolve().then(() => __toESM(require("./nodes/4.js"))),
+      () => Promise.resolve().then(() => __toESM(require("./nodes/5.js"))),
+      () => Promise.resolve().then(() => __toESM(require("./nodes/6.js"))),
+      () => Promise.resolve().then(() => __toESM(require("./nodes/7.js"))),
+      () => Promise.resolve().then(() => __toESM(require("./nodes/8.js")))
     ],
     routes: [
       {
@@ -48,11 +52,47 @@ const manifest = {
       },
       {
         type: "page",
+        pattern: /^\/productivity\/?$/,
+        params: null,
+        path: "/productivity",
+        shadow: null,
+        a: [0, 3],
+        b: [1]
+      },
+      {
+        type: "page",
+        pattern: /^\/timeline\/?$/,
+        params: null,
+        path: "/timeline",
+        shadow: null,
+        a: [0, 4],
+        b: [1]
+      },
+      {
+        type: "page",
+        pattern: /^\/friends\/?$/,
+        params: null,
+        path: "/friends",
+        shadow: null,
+        a: [0, 5],
+        b: [1]
+      },
+      {
+        type: "page",
         pattern: /^\/offline\/?$/,
         params: null,
         path: "/offline",
         shadow: null,
-        a: [0, 3],
+        a: [0, 6],
+        b: [1]
+      },
+      {
+        type: "page",
+        pattern: /^\/habits\/?$/,
+        params: null,
+        path: "/habits",
+        shadow: null,
+        a: [0, 7],
         b: [1]
       },
       {
@@ -67,7 +107,7 @@ const manifest = {
         params: null,
         path: "/vices",
         shadow: null,
-        a: [0, 4],
+        a: [0, 8],
         b: [1]
       }
     ]

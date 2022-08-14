@@ -45,7 +45,8 @@
 					</div>
 				</div>
 			</div>
-			<p class="text-center">Momentum gives a global percentage bonus to all xp earned.</p>
+			<p class="text-center">Momentum gives a global percentage bonus to all xp gained.</p>
+            <p class="text-center">Every 10 momentum gives a +1% bonus</p>
             <div class="divider"></div>
 			<p class="mt-5">You can earn momentum by:</p>
 			<ul class="list-disc ml-8">

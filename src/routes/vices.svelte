@@ -296,6 +296,7 @@
 									change: 0.001 * (vice.current_ui.days - vice.last_award),
 								});
 								awardXp(vice.current_ui.days, vice.last_award, vice);
+								vice.last_award = vice.current_ui.days;
 							}}
 						>
 							<span class="indicator-item indicator-center badge badge-primary"

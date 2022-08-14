@@ -4,7 +4,7 @@ import { tweened } from "svelte/motion";
 
 
     export let profile;
-    const momentumTween = tweened(0)
+    const momentumTween = tweened(profile.momentum)
 
 
     $: momentumTween.set(profile.momentum)

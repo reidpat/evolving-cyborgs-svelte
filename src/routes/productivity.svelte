@@ -37,7 +37,7 @@
 
 		if (productivity && productivity.api_key) {
 			let apiKey = productivity.api_key;
-			rescueTimeData = await fetch(`http://localhost:3000/api/rescuetime/${apiKey}.json`).then(
+			rescueTimeData = await fetch(`https://evolvingcyborgs.netlify.app/api/rescuetime/${apiKey}.json`).then(
 				(response) => response.json()
 			);
 

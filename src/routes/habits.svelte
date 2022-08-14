@@ -381,9 +381,6 @@
 			}}>Add New Habit</button
 		>
 	</div>
-	<button class="btn" on:click={() => {
-		dispatch('momentumChange', {change: 0.01, event: 'update' });
-	}}>add momentum</button>
 	<div
 		class="modal modal-accent sm:modal-middle"
 		class:modal-open={open}

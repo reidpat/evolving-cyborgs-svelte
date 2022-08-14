@@ -15,7 +15,7 @@
 	}
 
 	async function loadFriends() {
-        loading = true;
+		loading = true;
 		try {
 			let { data: friendships, error } = await supabase
 				.from(`friendships`)
@@ -45,11 +45,10 @@
 			friends = friends;
 			requests = requests;
 			sent = sent;
-
 		} catch (error) {
 			console.log(error);
 		}
-        loading = false;
+		loading = false;
 	}
 
 	onMount(async () => {
@@ -111,13 +110,13 @@
 
 <div class="content-container">
 	{#if currentTab == 'friends'}
-    <div class="alert shadow-lg mb-4">
-        <div>
-          <div>
-            <h1 class="font-bold">Friends</h1>
-          </div>
-        </div>
-      </div>
+		<div class="alert shadow-lg mb-4">
+			<div>
+				<div>
+					<h1 class="font-bold">Friends</h1>
+				</div>
+			</div>
+		</div>
 		{#if friends && friends.length > 0}
 			{#each friends as friend (friend.id)}
 				<div class="card bg-base-100 shadow-xl card-compact">
@@ -125,13 +124,25 @@
 						<div>
 							<h2 class="card-title">{friend.user.username}</h2>
 						</div>
-						<div class="xp-bar">
-							<p>Level: {friend.user.level} | XP: {friend.user.xp}/{friend.user.next_level_xp}</p>
-							<AnimatedProgress
-								classColor="progress-primary"
-								bind:value={friend.user.xp}
-								bind:max={friend.user.next_level_xp}
-							/>
+						<div class="flex">
+							<div
+								class="radial-progress text-accent"
+								style="--value:{(friend.user.momentum - Math.floor(friend.user.momentum)) * 100};"
+							>
+								{#if friend.user.momentum % 1 == 0}
+									{Math.floor(friend.user.momentum)}.00x
+								{:else}
+									{friend.user.momentum}x
+								{/if}
+							</div>
+							<div class="xp-bar">
+								<p>Level: {friend.user.level} | XP: {friend.user.xp}/{friend.user.next_level_xp}</p>
+								<AnimatedProgress
+									classColor="progress-primary"
+									bind:value={friend.user.xp}
+									bind:max={friend.user.next_level_xp}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -140,7 +151,9 @@
 			<div class="card bg-base-100 shadow-xl card-compact">
 				<div class="card-body">
 					<div>
-						<h2 class="card-title">Looks like you don't have any friends yet. Try adding one below!</h2>
+						<h2 class="card-title">
+							Looks like you don't have any friends yet. Try adding one below!
+						</h2>
 					</div>
 				</div>
 			</div>
@@ -148,13 +161,13 @@
 	{/if}
 
 	{#if currentTab == 'requests'}
-    <div class="alert shadow-lg mb-4">
-        <div>
-          <div>
-            <h1 class="font-bold">Requests</h1>
-          </div>
-        </div>
-      </div>
+		<div class="alert shadow-lg mb-4">
+			<div>
+				<div>
+					<h1 class="font-bold">Requests</h1>
+				</div>
+			</div>
+		</div>
 		{#if requests && requests.length > 0}
 			{#each requests as request (request.id)}
 				<div class="card bg-base-100 shadow-xl card-compact  flex">
@@ -186,12 +199,12 @@
 
 	{#if currentTab == 'sent'}
 		<div class="alert shadow-lg mb-4">
-            <div>
-              <div>
-                <h1 class="font-bold">Sent</h1>
-              </div>
-            </div>
-          </div>
+			<div>
+				<div>
+					<h1 class="font-bold">Sent</h1>
+				</div>
+			</div>
+		</div>
 		{#if sent && sent.length > 0 && currentTab == 'sent'}
 			{#each sent as sent (sent.id)}
 				<div class="card bg-base-100 shadow-xl card-compact">
@@ -209,7 +222,7 @@
 			>Add a new friend</button
 		>
 	</div>
-	
+
 	<div
 		class="modal modal-accent sm:modal-middle"
 		class:modal-open={open}
@@ -289,10 +302,9 @@
 		class="tab indicator"
 	>
 		Requests
-        {#if requests && requests.length > 0}
-        <span class="indicator-item badge badge-secondary">{requests.length}</span>
-        {/if}
-        
+		{#if requests && requests.length > 0}
+			<span class="indicator-item badge badge-secondary">{requests.length}</span>
+		{/if}
 	</div>
 	<div on:click={() => (currentTab = 'sent')} class:tab-active={currentTab === 'sent'} class="tab">
 		Sent
@@ -307,7 +319,7 @@
 		justify-content: center;
 		width: 100%;
 		background-color: hsl(var(--b2));
-        border-bottom: 3px solid hsl(var(--pf));
-        border-radius: 0px;
+		border-bottom: 3px solid hsl(var(--pf));
+		border-radius: 0px;
 	}
 </style>

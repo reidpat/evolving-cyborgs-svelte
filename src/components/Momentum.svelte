@@ -50,13 +50,15 @@
             <div class="divider"></div>
 			<p class="mt-5">You can earn momentum by:</p>
 			<ul class="list-disc ml-8">
-				<li>Completing Habits (+3 momentum)</li>
-				<li>Avoiding Vices (+2 momentum/day)</li>
+				<li>Completing Habits (+3)</li>
+				<li>Avoiding Vices (+2 per day)</li>
+                <li>Being Productive (+1 or +2 per hour)</li>
 			</ul>
 			<p class="mt-5">But be careful! You will lose momentum by:</p>
 			<ul class="list-disc ml-8">
-				<li>Missing Habits (-3 momentum)</li>
-				<li>Resetting Vices (-2 momentum)</li>
+				<li>Missing Habits (-3)</li>
+				<li>Resetting Vices (-2)</li>
+                <li>Being Unproductive (-1 or -2 per hour)</li>
 			</ul>
 		{/if}
 		<div class="modal-action">

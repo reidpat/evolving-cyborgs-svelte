@@ -184,6 +184,7 @@
 			</div>
 		</div>
 		{/if}
+
 		<div class="modal modal-middle overflow-x-visible" class:modal-open={open}>
 			<div class="modal-box overflow-y-visible">
 				{#if open}

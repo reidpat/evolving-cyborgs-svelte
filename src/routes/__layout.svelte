@@ -57,7 +57,7 @@
 	});
 
 	async function addXp(event) {
-		let newXp = event.detail.xp;
+		let newXp = Math.round(event.detail.xp * $profileStore.momentum);
 		let xp = $profileStore.xp + newXp;
 		let next_level_xp = $profileStore.next_level_xp;
 		let level = $profileStore.level;
@@ -99,6 +99,27 @@
 		});
 	}
 
+	async function momentumChange(event){
+		let momentumChangeDetail = { ...event.detail };
+
+		let newMomentum = Math.round(100 * ($profileStore.momentum + momentumChangeDetail.change))/100;
+
+		if (newMomentum < 0) {
+			newMomentum = 0;
+		} else if (momentumChangeDetail.change > 0) {
+			toast.push(`You gained ${momentumChangeDetail.change} momentum`);
+		}
+
+		profileStore.set({...$profileStore, momentum: newMomentum});
+
+		const { data, error } = await supabase
+			.from('profiles')
+			.update({ momentum: newMomentum })
+			.eq('id', $user.id);
+
+		return Promise.resolve();
+	}
+
 	async function setNewUsername() {
 		try {
 			const { data:profile, error } = await supabase
@@ -132,7 +153,7 @@
 
 {#if $user}
 	<div class="main-content-container">
-		<Eventbus on:addXp={addXp} on:habitGoal={habitGoal}>
+		<Eventbus on:addXp={addXp} on:habitGoal={habitGoal} on:momentumChange={momentumChange}>
 			{#if $user}
 				<slot />
 			{/if}

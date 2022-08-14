@@ -8,8 +8,8 @@
 	import { createEventbusDispatcher } from 'svelte-eventbus';
 	import SveltyPicker from 'svelty-picker';
 	const dispatch = createEventbusDispatcher();
-	import {scale} from 'svelte/transition'
-	import { quintOut } from "svelte/easing";
+	import { scale } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 
 	let newViceName = '';
 	let open = false;
@@ -142,7 +142,7 @@
 			console.log('cannot select a date that is before a previous reset');
 			return;
 		}
-		if(reset > new Date()){
+		if (reset > new Date()) {
 			console.log('cannot select a future date');
 			return;
 		}
@@ -162,6 +162,11 @@
 		updateViceUI(newVice);
 
 		let loading = true;
+
+		dispatch('momentumChange', {
+			type: 'vice',
+			change: -0.01
+		});
 
 		const { data: timeline } = await supabase
 			.from('timeline')
@@ -212,7 +217,7 @@
 
 		loading = false;
 		newViceName = '';
-		await updateViceUI(vice[0], timeline[0])
+		await updateViceUI(vice[0], timeline[0]);
 	}
 
 	let myDate = null;
@@ -222,7 +227,7 @@
 <div class="content-container">
 	<h1>Vices</h1>
 	{#each vices as vice}
-		<div class="card bg-base-100 shadow-xl card-compact" in:scale={{duration: 500}}>
+		<div class="card bg-base-100 shadow-xl card-compact" in:scale={{ duration: 500 }}>
 			<div class="card-body">
 				<h2 class="text-4xl text-center">{vice.name}</h2>
 				<div tabindex="0" class="collapse collapse-arrow">
@@ -249,11 +254,11 @@
 							</div>
 
 							<div class="stat">
-								<div class="stat-title">Total</div>
+								<div class="stat-title">Avoided</div>
 								<div class="stat-value">
-									{vice.total_ui.days}d {vice.total_ui.hours}h {vice.total_ui.minutes}m
+									{vice.total_ui.days- vice.num}
 								</div>
-								<div class="stat-desc">Amount of time avoided</div>
+								<div class="stat-desc">Days total</div>
 							</div>
 
 							<div class="stat">
@@ -280,6 +285,10 @@
 						<div
 							class="indicator"
 							on:click={() => {
+								dispatch('momentumChange', {
+									type: 'vice',
+									change: 0.01 * (vice.current_ui.days - vice.last_award),
+								});
 								awardXp(vice.current_ui.days, vice.last_award, vice);
 							}}
 						>
@@ -316,8 +325,12 @@
 			{#if currentVice}
 				<p class="card-title">Reset {currentVice.name}</p>
 			{/if}
-			
-			<SveltyPicker inputClasses="form-control input input-primary" format="yyyy-mm-dd hh:ii" bind:value={myDate} />
+
+			<SveltyPicker
+				inputClasses="form-control input input-primary"
+				format="yyyy-mm-dd hh:ii"
+				bind:value={myDate}
+			/>
 			<label for="time-picker">Choose date and time</label>
 			<div class="modal-action">
 				<button
@@ -326,7 +339,7 @@
 						resetOpen = false;
 						myDate = null;
 					}}
-					class:btn-disabled="{myDate === null}"
+					class:btn-disabled={myDate === null}
 					class="btn btn-primary modal-button">Reset</button
 				>
 			</div>

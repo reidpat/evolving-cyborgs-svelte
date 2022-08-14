@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { habitStore, user } from '../sessionStore';
+	import { habitStore, user, profileStore } from '../sessionStore';
 	import { supabase } from '../supabaseClient';
 	import { createEventbusDispatcher } from 'svelte-eventbus';
 	import AnimatedProgress from '../components/AnimatedProgress.svelte';
@@ -202,6 +202,10 @@
 
 					if (gapInDates >= 2) {
 						newHabit = { ...newHabit, is_complete: false };
+						dispatch('momentumChange', {
+						type: 'habit',
+						change: -0.01 * gapInDates,
+				});
 					} else if (gapInDates == 1) {
 						newHabit = { ...newHabit, is_complete: false };
 					} else if (gapInDates == 0) {
@@ -263,6 +267,11 @@
 
 			if (newHabit.is_complete) {
 				//add to timeline
+				
+				dispatch('momentumChange', {
+					type: 'habit',
+					change: 0.01,
+				});
 
 				let xp = 100 + (newHabit.streak + newHabit.goalProgress) * 10;
 				dispatch('addXp', { xp: xp, event: habit.name });
@@ -272,9 +281,14 @@
 				// 	xp
 				// }, ...newHabit.timeline]);
 
+
+
 				const { data: timeline, error } = await supabase
 					.from('timeline')
-					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: xp }]);
+					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: Math.round(xp * $profileStore.momentum)}]);
+				if (error) {
+					console.log(error);
+				}
 
 				const { data: habit_update } = await supabase
 					.from('habits')
@@ -285,7 +299,11 @@
 			} else {
 				let xp = habit.timeline[0].xp_awarded;
 				dispatch('addXp', { xp: -xp, event: habit.name });
-				console.log(xp);
+
+				dispatch('momentumChange', {
+					type: 'habit',
+					change: -0.01,
+				});
 
 				if (habit.timeline && habit.timeline.length > 0) {
 					const { data: timeline_update, error } = await supabase
@@ -322,6 +340,7 @@
 	}
 
 	let open = false;
+	
 </script>
 
 <div class="content-container">
@@ -362,6 +381,9 @@
 			}}>Add New Habit</button
 		>
 	</div>
+	<button class="btn" on:click={() => {
+		dispatch('momentumChange', {change: 0.01, event: 'update' });
+	}}>add momentum</button>
 	<div
 		class="modal modal-accent sm:modal-middle"
 		class:modal-open={open}

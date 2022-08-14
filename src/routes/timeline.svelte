@@ -61,7 +61,11 @@
 						<td>{timeitem.date}</td>
 						<td>{timeitem.name}</td>
 						<td>{timeitem.type}</td>
-						<td>{timeitem.xp_awarded}</td>
+						<td>{#if timeitem.xp_awarded}
+							{timeitem.xp_awarded}
+							{:else}
+							-
+						{/if}</td>
 					</tr>
 				{/each}
 			</table>

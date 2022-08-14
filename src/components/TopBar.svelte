@@ -34,16 +34,18 @@
 			})
 			.subscribe();
 	}
-
-
 </script>
 
 <div class="outer-nav">
 	<div class="inner-nav">
 		{#if profile}
-			{#if profile.username}
-				<p class="font-bold m-3 text-3xl">{profile.username[0]}</p>
-			{/if}
+			<div class="radial-progress text-accent" style="--value:{(profile.momentum - Math.floor(profile.momentum)) * 100};">
+				{#if profile.momentum % 1 == 0}
+				{Math.floor(profile.momentum)}.00x
+				{:else}
+					{profile.momentum}x
+				{/if}
+			</div>
 
 			<div class="xp-bar">
 				<p>Level: {profile.level} | XP: {profile.xp}/{profile.next_level_xp}</p>

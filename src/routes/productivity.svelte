@@ -27,9 +27,8 @@
 			console.log(error);
 		}
 
-		console.log(productivityData);
 		productivity = productivityData[0];
-        console.log(productivity);
+		console.log(productivity);
 
 		if (productivity && productivity.api_key) {
 			let apiKey = productivity.api_key;
@@ -43,6 +42,49 @@
 				return b[3] - a[3];
 			});
 		}
+		let rowValues = {
+			'2': 0,
+			'1': 0,
+			'-1': 0,
+			'-2': 0
+		};
+		rows.forEach((row) => {
+			rowValues[row[[3]]] = row[1];
+		});
+
+		let momentum = 0;
+
+		let vpdiff =
+			Math.floor(rowValues['2'] / (60 * 60)) - Math.floor(productivity.vp_total / (60 * 60));
+		let pdiff =
+			Math.floor(rowValues['1'] / (60 * 60)) - Math.floor(productivity.p_total / (60 * 60));
+		let udiff =
+			Math.floor(rowValues['-1'] / (60 * 60)) - Math.floor(productivity.u_total / (60 * 60));
+		let vudiff =
+			Math.floor(rowValues['-2'] / (60 * 60)) - Math.floor(productivity.vu_total / (60 * 60));
+
+		momentum += vpdiff * 2 + pdiff * 1 + udiff * -1 + vudiff * -2;
+
+		console.log(momentum);
+
+		console.log(vpdiff, pdiff, udiff, vudiff);
+		if (momentum > 0) {
+			dispatch('momentumChange', {
+				type: 'productivity',
+				change: momentum
+			});
+		}
+
+		const { data, error: postError } = await supabase
+			.from('productivity')
+			.update({
+				vp_total: rowValues['2'],
+				p_total: rowValues['1'],
+				u_total: rowValues['-1'],
+				vu_total: rowValues['-2'],
+				last_updated: new Date()
+			})
+			.eq('user_id', userID);
 	}
 
 	onMount(async () => {

@@ -5,7 +5,7 @@
 	const momentumTween = tweened(profile.momentum);
 
 	$: momentumTween.set(profile.momentum);
-	let momentumOpen = true;
+	let momentumOpen = false;
 </script>
 
 <div>

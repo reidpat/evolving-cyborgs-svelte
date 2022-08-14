@@ -51,7 +51,6 @@
 					<tr>
 						<th>Time</th>
 						<th>Name</th>
-						<th>Type</th>
 						<th>Xp</th>
 					</tr>
 				</thead>

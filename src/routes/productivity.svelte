@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '../supabaseClient';
 	import { user, profileStore } from '../sessionStore';
-    import { createEventbusDispatcher } from 'svelte-eventbus';
-    const dispatch = createEventbusDispatcher();
+	import { createEventbusDispatcher } from 'svelte-eventbus';
+	const dispatch = createEventbusDispatcher();
 
 	let date = new Date();
 	let year = date.getFullYear();
@@ -17,10 +17,10 @@
 
 	let productivity;
 
-    let loading = false;
+	let loading = false;
 
 	async function getProductivityData() {
-        loading = true;
+		loading = true;
 		let userID = $user.id;
 		console.log(userID);
 		let { data: productivityData, error } = await supabase
@@ -37,8 +37,12 @@
 
 		if (productivity && productivity.api_key) {
 			let apiKey = productivity.api_key;
-			rescueTimeData = await fetch(`https://evolvingcyborgs.netlify.app/api/rescuetime/${apiKey}.json`).then(
-				(response) => response.json()
+			let redirect = 'http://evolvingcyborgs.netlify.app';
+			if (import.meta.env.DEV) {
+				redirect = 'http://localhost:3000';
+			}
+			rescueTimeData = await fetch(`${redirect}/api/rescuetime/${apiKey}.json`).then((response) =>
+				response.json()
 			);
 
 			console.log(rescueTimeData);
@@ -50,12 +54,21 @@
 		let rowValues = {
 			'2': 0,
 			'1': 0,
+            '0': 0,
 			'-1': 0,
 			'-2': 0
 		};
-		rows.forEach((row) => {
-			rowValues[row[[3]]] = row[1];
-		});
+
+		
+			rows.forEach((row) => {
+				rowValues[row[[3]]] = row[1];
+			});
+        if (getDayGapInDates(new Date(), new Date(rescueTimeData.last_updated)) > 0) {
+            productivity.vp_total = 0;
+            productivity.p_total = 0;
+            productivity.u_total = 0;
+            productivity.vu_total = 0;
+		}
 
 		let momentum = 0;
 
@@ -91,12 +104,20 @@
 			})
 			.eq('user_id', userID);
 
-        loading = false;
+		loading = false;
 	}
 
 	onMount(async () => {
 		getProductivityData();
 	});
+
+	function getDayGapInDates(date1, date2) {
+		date1.setHours(0, 0, 0, 0);
+		date2.setHours(0, 0, 0, 0);
+		let differenceInSecs = Math.abs(date2 - date1);
+		let differenceInDays = differenceInSecs / (1000 * 3600 * 24);
+		return differenceInDays;
+	}
 
 	async function handleAPIKey() {
 		const { data, error } = await supabase
@@ -137,14 +158,14 @@
 					<tr>
 						<td>Time Spent</td>
 						<td>Productivity</td>
-                        <td>Momentum</td>
+						<td>Momentum</td>
 					</tr>
 				</thead>
 				{#each rows as row}
 					<tr>
 						<td>{Math.floor(row[1] / 60 / 60)}h {Math.round(((row[1] / 60 / 60) % 1) * 60)}m</td>
 						<td>{row[3]}</td>
-                        <td>{Math.floor(row[1] / 60 / 60) * row[3]}</td>
+						<td>{Math.floor(row[1] / 60 / 60) * row[3]}</td>
 					</tr>
 				{/each}
 			</table>

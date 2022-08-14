@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '../supabaseClient';
 	import { user, profileStore } from '../sessionStore';
+    import { createEventbusDispatcher } from 'svelte-eventbus';
+    const dispatch = createEventbusDispatcher();
 
 	let date = new Date();
 	let year = date.getFullYear();
@@ -15,7 +17,10 @@
 
 	let productivity;
 
+    let loading = false;
+
 	async function getProductivityData() {
+        loading = true;
 		let userID = $user.id;
 		console.log(userID);
 		let { data: productivityData, error } = await supabase
@@ -71,7 +76,7 @@
 		if (momentum > 0) {
 			dispatch('momentumChange', {
 				type: 'productivity',
-				change: momentum
+				change: momentum / 1000
 			});
 		}
 
@@ -85,6 +90,8 @@
 				last_updated: new Date()
 			})
 			.eq('user_id', userID);
+
+        loading = false;
 	}
 
 	onMount(async () => {
@@ -123,19 +130,21 @@
 		/>
 		<button class="btn btn-outline mt-5" on:click={handleAPIKey}>Add API key</button>
 	{/if}
-	{#if rescueTimeData}
+	{#if rescueTimeData && !loading}
 		<div class="overflow-x-auto">
 			<table class="table">
 				<thead>
 					<tr>
-						<td>Time Spent (Hours)</td>
+						<td>Time Spent</td>
 						<td>Productivity</td>
+                        <td>Momentum</td>
 					</tr>
 				</thead>
 				{#each rows as row}
 					<tr>
 						<td>{Math.floor(row[1] / 60 / 60)}h {Math.round(((row[1] / 60 / 60) % 1) * 60)}m</td>
 						<td>{row[3]}</td>
+                        <td>{Math.floor(row[1] / 60 / 60) * row[3]}</td>
 					</tr>
 				{/each}
 			</table>

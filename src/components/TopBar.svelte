@@ -1,5 +1,6 @@
 <script>
 	import { user, profileStore } from '../sessionStore';
+	import ProgressCircle from 'svelte-progresscircle';
 
 	import SignIn from './SignIn.svelte';
 
@@ -39,13 +40,16 @@
 <div class="outer-nav">
 	<div class="inner-nav">
 		{#if profile}
-			<div class="radial-progress text-accent" style="--value:{(profile.momentum - Math.floor(profile.momentum)) * 100};">
-				{#if profile.momentum % 1 == 0}
-				{Math.floor(profile.momentum)}.00x
-				{:else}
-					{profile.momentum}x
-				{/if}
+			<div class="radial-progress text-accent bg-base-100" style="--value:{Math.round(((profile.momentum * 100) % 1) * 100)};">
+				<div class="flex flex-col justify-center">
+					<span class="text-center text-lg font-semibold">+{Math.round((Math.floor($profileStore.momentum * 100) / 100) % 1 * 100)}%</span>
+					<span class="text-center text-2xs">{Math.round(((profile.momentum * 100) % 1) * 10)}/10</span>
+				</div>
 			</div>
+			<!-- <ProgressCircle max="100" value="10">
+				<span>10</span>
+				<span>100</span>
+			  </ProgressCircle> -->
 
 			<div class="xp-bar">
 				<p>Level: {profile.level} | XP: {profile.xp}/{profile.next_level_xp}</p>

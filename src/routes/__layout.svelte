@@ -57,7 +57,9 @@
 	});
 
 	async function addXp(event) {
-		let newXp = Math.round(event.detail.xp * $profileStore.momentum);
+		let momentum = ((Math.floor($profileStore.momentum * 100) / 100));
+		console.log(Math.round(momentum % 1 * 100));
+		let newXp = Math.round(event.detail.xp * momentum);
 		let xp = $profileStore.xp + newXp;
 		let next_level_xp = $profileStore.next_level_xp;
 		let level = $profileStore.level;
@@ -102,13 +104,13 @@
 	async function momentumChange(event){
 		let momentumChangeDetail = { ...event.detail };
 
-		let newMomentum = Math.round(100 * ($profileStore.momentum + momentumChangeDetail.change))/100;
+		let newMomentum = Math.round(1000 * ($profileStore.momentum + momentumChangeDetail.change))/1000;
 
 		if (newMomentum < 1) {
 			newMomentum = 1;
 		}
 		if (momentumChangeDetail.change > 0) {
-			toast.push(`You gained ${momentumChangeDetail.change} momentum`);
+			toast.push(`You gained ${momentumChangeDetail.change * 1000} momentum`);
 		}
 
 		profileStore.set({...$profileStore, momentum: newMomentum});

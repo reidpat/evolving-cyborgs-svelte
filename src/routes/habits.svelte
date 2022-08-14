@@ -204,7 +204,7 @@
 						newHabit = { ...newHabit, is_complete: false };
 						dispatch('momentumChange', {
 						type: 'habit',
-						change: -0.01 * gapInDates,
+						change: -0.003 * gapInDates,
 				});
 					} else if (gapInDates == 1) {
 						newHabit = { ...newHabit, is_complete: false };
@@ -270,7 +270,7 @@
 				
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: 0.01,
+					change: 0.003,
 				});
 
 				let xp = 100 + (newHabit.streak + newHabit.goalProgress) * 10;
@@ -302,7 +302,7 @@
 
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: -0.01,
+					change: -0.003,
 				});
 
 				if (habit.timeline && habit.timeline.length > 0) {

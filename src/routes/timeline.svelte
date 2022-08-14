@@ -43,7 +43,13 @@
 </script>
 
 <div class="content-container">
-	<h1 class="center">Timeline</h1>
+	<div class="alert shadow-lg mb-4">
+		<div>
+			<div>
+				<h1 class="font-bold">Timeline</h1>
+			</div>
+		</div>
+	</div>
 	<div class="overflow-x-auto">
 		{#if timeline}
 			<table class="table table-zebra w-full">

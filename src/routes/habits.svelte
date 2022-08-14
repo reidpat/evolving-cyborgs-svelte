@@ -344,7 +344,13 @@
 </script>
 
 <div class="content-container">
-	<h1>Habits</h1>
+	<div class="alert shadow-lg mb-4">
+		<div>
+			<div>
+				<h1 class="font-bold">Habits</h1>
+			</div>
+		</div>
+	</div>
 	{#if habits}
 		{#each habits as habit (habit.id)}
 			<div class="card bg-base-100 shadow-xl card-compact" in:scale={{duration: 500}}>

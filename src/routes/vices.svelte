@@ -225,7 +225,13 @@
 </script>
 
 <div class="content-container">
-	<h1>Vices</h1>
+	<div class="alert shadow-lg mb-4">
+		<div>
+			<div>
+				<h1 class="font-bold">Vices</h1>
+			</div>
+		</div>
+	</div>
 	{#each vices as vice}
 		<div class="card bg-base-100 shadow-xl card-compact" in:scale={{ duration: 500 }}>
 			<div class="card-body">

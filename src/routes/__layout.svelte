@@ -104,9 +104,10 @@
 
 		let newMomentum = Math.round(100 * ($profileStore.momentum + momentumChangeDetail.change))/100;
 
-		if (newMomentum < 0) {
-			newMomentum = 0;
-		} else if (momentumChangeDetail.change > 0) {
+		if (newMomentum < 1) {
+			newMomentum = 1;
+		}
+		if (momentumChangeDetail.change > 0) {
 			toast.push(`You gained ${momentumChangeDetail.change} momentum`);
 		}
 

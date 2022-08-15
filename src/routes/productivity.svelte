@@ -37,7 +37,7 @@
 
 		if (productivity && productivity.api_key) {
 			let apiKey = productivity.api_key;
-			let redirect = 'http://evolvingcyborgs.netlify.app';
+			let redirect = 'https://evolvingcyborgs.netlify.app';
 			if (import.meta.env.DEV) {
 				redirect = 'http://localhost:3000';
 			}

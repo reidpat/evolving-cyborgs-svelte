@@ -142,7 +142,7 @@
 			</div>
 		</div>
 	</div>
-	{#if !productivity || productivity.length == 0}
+	{#if (!productivity || productivity.length == 0) && !loading}
 		<input
 			bind:value={apiKeyInput}
 			type="text"

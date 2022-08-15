@@ -22,6 +22,7 @@
 		<ul tabindex="0" class="dropdown-content menu p-2 bg-base-200 rounded-md">
 			<a href="/timeline" class:tab-active={currentTab === '/timeline'} class="tab tab-lg">Timeline</a>
 			<a href="/productivity" class:tab-active={currentTab === '/productivity'} class="tab tab-lg">Productivity</a>
+			<a href="/activities" class:tab-active={currentTab === '/activities'} class="tab tab-lg">Activities</a>
 		</ul>
 	  </div>
 	

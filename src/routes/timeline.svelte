@@ -12,7 +12,7 @@
 			.from('timeline')
 			.select(
 				`
-    *, habit(name), vice(name) `
+    *, habit(name), vice(name), activity(name)`
 			)
 			.eq('user_id', $user.id)
             .gt('created_at', oneWeekAgo.toISOString())
@@ -23,9 +23,13 @@
 			if (i.habit) {
 				name = i.habit.name;
 				type = 'Habit';
-			} else {
+			} else if(i.vice){
 				name = i.vice.name;
 				type = 'Vice';
+			}
+			else if(i.activity){
+				name = i.activity.name;
+				type = "Activity";
 			}
 			return {
 				... i,

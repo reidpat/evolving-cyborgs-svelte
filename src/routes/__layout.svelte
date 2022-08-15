@@ -110,6 +110,8 @@
 		}
 		if (momentumChangeDetail.change > 0) {
 			toast.push(`You gained ${momentumChangeDetail.change * 1000} momentum`);
+		}else if (momentumChangeDetail.change < 0) {
+			toast.push(`You lost ${momentumChangeDetail.change * -1000} momentum`);
 		}
 
 		profileStore.set({...$profileStore, momentum: newMomentum});

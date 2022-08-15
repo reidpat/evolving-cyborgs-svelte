@@ -9,6 +9,27 @@
 	let newActivityName = '';
 	let newActivityValue = 0;
 	let activities;
+	let activitiesFull;
+
+	let search = "";
+
+	$: {
+		if (activitiesFull && search.length > 0) {
+			activities = activitiesFull
+				.filter(activity => {
+					return activity.name.toLowerCase().includes(search.toLowerCase());
+				})
+				.sort((a, b) => {
+					return b.value - a.value;
+				});
+
+
+            console.log(activities);
+		}
+        else if(activitiesFull){
+            activities = activitiesFull;
+        }
+	}
 
 	onMount(() => {
 		loadActivities();
@@ -20,15 +41,16 @@
 			.select('*')
 			.eq('user_id', $user.id);
 
-		activities = activitiesData;
+		activitiesFull = activitiesData;
+		activities = activitiesFull;
 
 		console.log(activities);
 	}
 
 	async function completeActivity(activity) {
-        let xp = null;
+		let xp = null;
 		if (activity.value > 0) {
-            xp = activity.value * 10;
+			xp = activity.value * 10;
 			dispatch('addXp', { xp: xp, event: activity.name });
 		}
 		dispatch('momentumChange', {
@@ -39,12 +61,16 @@
 		const { data: timeline, error } = await supabase
 			.from('timeline')
 			.insert([
-				{ user_id: $user.id, activity: activity.id, xp_awarded: Math.round(xp * $profileStore.momentum) }
+				{
+					user_id: $user.id,
+					activity: activity.id,
+					xp_awarded: Math.round(xp * $profileStore.momentum)
+				}
 			]);
 		if (error) {
 			console.log(error);
 		}
-        console.log(timeline);
+		console.log(timeline);
 
 		console.log(activity);
 	}
@@ -70,14 +96,26 @@
 		</div>
 	</div>
 	{#if activities}
+		<input
+			type="text"
+			bind:value={search}
+			placeholder="Search"
+			class="input input-bordered w-full max-w-xs"
+		/>
 		{#each activities as activity}
 			<div class="card bg-base-100 shadow-xl card-compact">
 				<div class="p-5 flex justify-between">
 					<div>
 						<h2 class="card-title">{activity.name}</h2>
-						<div class="badge badge-accent">
-							{#if activity.value > 0}+{/if}{activity.value}
-						</div>
+						{#if activity.value > 0}
+							<div class="badge badge-success">
+								+{activity.value}
+							</div>
+						{:else}
+							<div class="badge badge-error">
+								{activity.value}
+							</div>
+						{/if}
 					</div>
 					<button class="btn btn-primary ml-auto" on:click={() => completeActivity(activity)}
 						>Complete</button

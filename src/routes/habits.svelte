@@ -202,10 +202,10 @@
 
 					if (gapInDates >= 2) {
 						newHabit = { ...newHabit, is_complete: false };
-						dispatch('momentumChange', {
-						type: 'habit',
-						change: -0.003 * gapInDates,
-				});
+						// dispatch('momentumChange', {
+						// type: 'habit',
+						// change: -0.003 * gapInDates,
+				// });
 					} else if (gapInDates == 1) {
 						newHabit = { ...newHabit, is_complete: false };
 					} else if (gapInDates == 0) {

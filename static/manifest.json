@@ -16,7 +16,7 @@
       }
     ],
     "background_color": "#3367D6",
-    "display": "standalone",
+    "display": "fullscreen",
     "scope": ".",
     "theme_color": "#3367D6",
     "description": "A way to relate to the digital world in a healthier way"

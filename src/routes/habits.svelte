@@ -89,6 +89,9 @@
 		habitStore.set(habits);
 	}
 
+	function getNewHabitPercent(habit){
+
+	}
 	//taking in current progress and goal and returning what the new goal should be
 	//3, 5, 10, 15, 20, 30, ...
 	function getNewHabitGoal(progress, goal, name) {
@@ -135,7 +138,7 @@
 
 		let threshold = new Date();
 		threshold.setHours(0, 0, 0, 0);
-		threshold.setDate(threshold.getDate() - habit.goal);
+		threshold.setDate(threshold.getDate() - 30);
 		let filteredTimeline = habit.timeline.filter((event) => {
 			let eventDate = new Date(event.created_at);
 			eventDate.setHours(0, 0, 0, 0);
@@ -144,7 +147,7 @@
 		return {
 			...habit,
 			goalProgress: filteredTimeline.length,
-			goal: getNewHabitGoal(filteredTimeline.length, habit.goal, habit.name)
+			goal: 30
 		};
 	}
 
@@ -258,7 +261,7 @@
 				is_complete: !habit.is_complete,
 				streak,
 				goalProgress,
-				goal: newGoal
+				goal: 30
 			};
 
 			loading = true;
@@ -373,8 +376,8 @@
 						</div>
 					</div>
 
-					<AnimatedProgress classColor="progress-accent" bind:value={habit.goalProgress} bind:max={habit.goal} />
-					<p class="goal-info">Goal: {habit.goalProgress}/{habit.goal}</p>
+					<AnimatedProgress classColor="progress-accent" bind:value={habit.goalProgress} max={30} />
+					<p class="goal-info">Goal: {habit.goalProgress}/30  |  {Math.round(habit.goalProgress/30*100)}%</p>
 				</div>
 			</div>
 		{/each}

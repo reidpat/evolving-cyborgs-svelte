@@ -57,7 +57,7 @@
 	});
 
 	async function addXp(event) {
-		let momentum = ((Math.floor($profileStore.momentum * 100) / 100));
+		let momentum = Math.round($profileStore.momentum / 100) + 1;
 		let newXp = Math.round(event.detail.xp * momentum);
 		let xp = $profileStore.xp + newXp;
 		let next_level_xp = $profileStore.next_level_xp;
@@ -102,23 +102,34 @@
 
 	async function momentumChange(event){
 		let momentumChangeDetail = { ...event.detail };
+		let newMomentumXp = $profileStore.momentum_xp + momentumChangeDetail.change
+		let momentum_next_level_xp = $profileStore.momentum_next_level_xp;
+		let newMomentum = $profileStore.momentum;
 
-		let newMomentum = Math.round(1000 * ($profileStore.momentum + momentumChangeDetail.change))/1000;
 
-		if (newMomentum < 1) {
-			newMomentum = 1;
+		while(newMomentumXp > momentum_next_level_xp){
+			newMomentumXp -= momentum_next_level_xp
+			newMomentum += 1;
+			momentum_next_level_xp = 10 + newMomentum
 		}
+		while(newMomentumXp < 0){		
+			newMomentum -= 1;
+			momentum_next_level_xp = 10 + newMomentum
+			newMomentumXp += momentum_next_level_xp
+		}
+
+
 		if (momentumChangeDetail.change > 0) {
-			toast.push(`You gained ${momentumChangeDetail.change * 1000} momentum`);
+			toast.push(`You gained ${momentumChangeDetail.change} momentum`);
 		}else if (momentumChangeDetail.change < 0) {
-			toast.push(`You lost ${momentumChangeDetail.change * -1000} momentum`);
+			toast.push(`You lost ${momentumChangeDetail.change} momentum`);
 		}
-
-		profileStore.set({...$profileStore, momentum: newMomentum});
+		profileStore.set({...$profileStore, momentum: newMomentum, momentum_xp: newMomentumXp, momentum_next_level_xp: momentum_next_level_xp});
+		
 
 		const { data, error } = await supabase
 			.from('profiles')
-			.update({ momentum: newMomentum })
+			.update({ momentum: newMomentum, momentum_xp: newMomentumXp, momentum_next_level_xp: momentum_next_level_xp})
 			.eq('id', $user.id);
 
 		return Promise.resolve();

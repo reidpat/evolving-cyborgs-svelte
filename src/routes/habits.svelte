@@ -270,7 +270,7 @@
 				
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: 0.003,
+					change: 3,
 				});
 
 				let xp = 100 + (newHabit.streak + newHabit.goalProgress) * 10;
@@ -285,7 +285,7 @@
 
 				const { data: timeline, error } = await supabase
 					.from('timeline')
-					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: Math.round(xp * $profileStore.momentum)}]);
+					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: Math.round(xp + xp * $profileStore.momentum / 100)}]);
 				if (error) {
 					console.log(error);
 				}
@@ -302,7 +302,7 @@
 
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: -0.003,
+					change: -3,
 				});
 
 				if (habit.timeline && habit.timeline.length > 0) {

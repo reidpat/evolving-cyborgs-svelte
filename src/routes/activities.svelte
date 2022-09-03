@@ -55,7 +55,7 @@
 		}
 		dispatch('momentumChange', {
 			type: 'activity',
-			change: activity.value / 1000
+			change: activity.value
 		});
 
 		const { data: timeline, error } = await supabase
@@ -64,7 +64,7 @@
 				{
 					user_id: $user.id,
 					activity: activity.id,
-					xp_awarded: Math.round(xp * $profileStore.momentum)
+					xp_awarded: Math.round(xp + xp * $profileStore.momentum / 100)
 				}
 			]);
 		if (error) {

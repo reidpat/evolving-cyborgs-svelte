@@ -361,8 +361,9 @@
 					<div class="habit-upper">
 						<div>
 							<h2 class="card-title">{habit.name}</h2>
-
+							
 							<p>Streak: {habit.streak}</p>
+							
 						</div>
 
 						<div class="checkbox">
@@ -377,7 +378,7 @@
 					</div>
 
 					<AnimatedProgress classColor="progress-accent" bind:value={habit.goalProgress} max={30} />
-					<p class="goal-info">Goal: {habit.goalProgress}/30  |  {Math.round(habit.goalProgress/30*100)}%</p>
+					<p>{habit.goalProgress}/30  |  {Math.round(habit.goalProgress/30*100)}%</p>
 				</div>
 			</div>
 		{/each}

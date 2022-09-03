@@ -256,4 +256,7 @@
 	img{
 		max-width: 300px;
 	}
+	.main-content-container{
+		background-color: hsl(var(--b3));
+	}
 </style>

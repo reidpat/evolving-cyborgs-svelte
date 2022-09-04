@@ -14,9 +14,9 @@
 			.eq('user_id', $user.id)
             .order('order',  {ascending: true})
 		stats = statsData;
-		if (error) {
+		console.log(stats);
 			console.log(error);
-			if (error.code == '42P01') {
+			if (error && error.code == '42P01' || (!error && stats.length == 0)) {
 				console.log('no stats exist for this user');
 				console.log('creating new ones...');
 				const { data, error } = await supabase.from('stats').insert([
@@ -30,7 +30,6 @@
 				stats = data;
 				console.log(stats);
 			}
-		}
 		let { data: statsData2, error2 } = await supabase
 			.from(`stats`)
 			.select('*')

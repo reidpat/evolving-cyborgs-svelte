@@ -39,6 +39,7 @@
 		let { data: activitiesData, error } = await supabase
 			.from('activities')
 			.select('*')
+			.order('value', {ascending: false})
 			.eq('user_id', $user.id);
 
 		activitiesFull = activitiesData;
@@ -48,6 +49,7 @@
 	}
 
 	async function completeActivity(activity) {
+		search = '';
 		let xp = null;
 		if (activity.value > 0) {
 			xp = activity.value * 10;

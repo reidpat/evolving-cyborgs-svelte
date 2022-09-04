@@ -75,14 +75,6 @@
 				<div class="card-body">
 					<h2 class="card-title">{stat.name}</h2>
 					<StatsXpBar bind:stat />
-					<div class="card-actions justify-end">
-						<button
-							class="btn btn-primary"
-							on:click={() => {
-								addXp(stat, 55);
-							}}>Add Xp</button
-						>
-					</div>
 				</div>
 			</div>
 		{/each}

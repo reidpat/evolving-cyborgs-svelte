@@ -24,7 +24,7 @@
 
 <div
 class="radial-progress text-accent bg-base-300 m-auto"
-style="--value:{$statXpTween/stat.next_level_xp * 100}; --size:12rem;"
+style="--value:{$statXpTween/stat.next_level_xp * 100};"
 >
 <div class="flex flex-col justify-center">
     <span class="text-center text-lg font-semibold">{stat.level}</span>

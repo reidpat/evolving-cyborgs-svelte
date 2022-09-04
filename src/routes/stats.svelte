@@ -70,9 +70,9 @@
 	</div>
 	{#if stats}
 		{#each stats as stat}
-			<div class="card w-96 bg-base-100 shadow-xl">
+			<div class="card bg-base-100 shadow-xl">
 				<div class="card-body">
-					<h2 class="card-title">{stat.name}</h2>
+					<h2 class="card-title text-center justify-self-center self-center">{stat.name}</h2>
 					<StatsXpBar bind:stat />
 				</div>
 			</div>

@@ -107,7 +107,7 @@
 		let newMomentum = $profileStore.momentum;
 
 
-		while(newMomentumXp > momentum_next_level_xp){
+		while(newMomentumXp >= momentum_next_level_xp){
 			newMomentumXp -= momentum_next_level_xp
 			newMomentum += 1;
 			momentum_next_level_xp = 10 + newMomentum

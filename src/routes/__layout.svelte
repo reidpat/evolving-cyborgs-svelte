@@ -56,6 +56,35 @@
 		// console.log($user);
 	});
 
+	async function addXpToStats(stats, fullXp) {
+		stats = stats.filter((s) => s.value > 0);
+		console.log(stats);
+		stats.map(async (s) => {
+			let stat = s.stat;
+			stat.xp += Math.round((fullXp * s.value) / 100);
+			while (stat.xp > stat.next_level_xp) {
+				stat.xp -= stat.next_level_xp;
+				stat.level++;
+				stat.next_level_xp = Math.round(stat.level ** 1.5 + stat.level * 9) * 10;
+				toast.push(`${stat.name} leveled up to ${stat.level}`);
+			}
+			while (stat.xp < 0) {
+				if (stat.level > 1) {
+					stat.level--;
+					stat.next_level_xp = Math.round(stat.level ** 1.5 + stat.level * 9) * 10;
+					stat.xp += stat.next_level_xp;
+				} else {
+					stat.xp = 0;
+				}
+			}
+			const { data, error } = await supabase
+				.from('stats')
+				.update({level: stat.level, xp: stat.xp, next_level_xp: stat.next_level_xp })
+				.eq('id', stat.id);
+			console.log(stat);
+		});
+	}
+
 	async function addXp(event) {
 		let momentum = Math.round($profileStore.momentum / 100) + 1;
 		let newXp = Math.round(event.detail.xp * momentum);
@@ -63,6 +92,9 @@
 		let next_level_xp = $profileStore.next_level_xp;
 		let level = $profileStore.level;
 
+		if (event.detail.stats) {
+			addXpToStats(event.detail.stats, newXp);
+		}
 		while (xp > next_level_xp) {
 			xp -= next_level_xp;
 			level++;
@@ -100,36 +132,42 @@
 		});
 	}
 
-	async function momentumChange(event){
+	async function momentumChange(event) {
 		let momentumChangeDetail = { ...event.detail };
-		let newMomentumXp = $profileStore.momentum_xp + momentumChangeDetail.change
+		let newMomentumXp = $profileStore.momentum_xp + momentumChangeDetail.change;
 		let momentum_next_level_xp = $profileStore.momentum_next_level_xp;
 		let newMomentum = $profileStore.momentum;
 
-
-		while(newMomentumXp >= momentum_next_level_xp){
-			newMomentumXp -= momentum_next_level_xp
+		while (newMomentumXp >= momentum_next_level_xp) {
+			newMomentumXp -= momentum_next_level_xp;
 			newMomentum += 1;
-			momentum_next_level_xp = 10 + newMomentum
+			momentum_next_level_xp = 10 + newMomentum;
 		}
-		while(newMomentumXp < 0){		
+		while (newMomentumXp < 0) {
 			newMomentum -= 1;
-			momentum_next_level_xp = 10 + newMomentum
-			newMomentumXp += momentum_next_level_xp
+			momentum_next_level_xp = 10 + newMomentum;
+			newMomentumXp += momentum_next_level_xp;
 		}
-
 
 		if (momentumChangeDetail.change > 0) {
 			toast.push(`You gained ${momentumChangeDetail.change} momentum`);
-		}else if (momentumChangeDetail.change < 0) {
+		} else if (momentumChangeDetail.change < 0) {
 			toast.push(`You lost ${momentumChangeDetail.change} momentum`);
 		}
-		profileStore.set({...$profileStore, momentum: newMomentum, momentum_xp: newMomentumXp, momentum_next_level_xp: momentum_next_level_xp});
-		
+		profileStore.set({
+			...$profileStore,
+			momentum: newMomentum,
+			momentum_xp: newMomentumXp,
+			momentum_next_level_xp: momentum_next_level_xp
+		});
 
 		const { data, error } = await supabase
 			.from('profiles')
-			.update({ momentum: newMomentum, momentum_xp: newMomentumXp, momentum_next_level_xp: momentum_next_level_xp})
+			.update({
+				momentum: newMomentum,
+				momentum_xp: newMomentumXp,
+				momentum_next_level_xp: momentum_next_level_xp
+			})
 			.eq('id', $user.id);
 
 		return Promise.resolve();
@@ -137,24 +175,22 @@
 
 	async function setNewUsername() {
 		try {
-			const { data:profile, error } = await supabase
-			.from('profiles')
-			.update({ username: newUserName })
-			.eq('id', $user.id);
+			const { data: profile, error } = await supabase
+				.from('profiles')
+				.update({ username: newUserName })
+				.eq('id', $user.id);
 			profileStore.set(profile[0]);
 		} catch (error) {
 			console.log(error);
 		}
-		
-
 	}
 
-	function userReport(event){
+	function userReport(event) {
 		reportType = event.detail.type;
 		reportOpen = true;
 	}
 
-	let reportType = "";
+	let reportType = '';
 	let reportOpen = false;
 
 	let newUserName = '';
@@ -163,7 +199,7 @@
 <SvelteToast />
 <Eventbus on:userReport={userReport}>
 	<TopBar />
-	<UserReports bind:type={reportType} bind:open={reportOpen}/>
+	<UserReports bind:type={reportType} bind:open={reportOpen} />
 </Eventbus>
 
 {#if $user}
@@ -174,28 +210,28 @@
 			{/if}
 		</Eventbus>
 		{#if $profileStore && !$profileStore.username}
-		<div class="modal modal-accent sm:modal-middle" class:modal-open={true}>
-			<div class="modal-box">
-				<label for="user-name" class="label">
-					<span class="label-text">Set Username</span>
-				</label>
-				<input
-					id="user-name"
-					type="text"
-					placeholder="Type here"
-					class="input input-bordered input-primary w-full max-w-xs"
-					bind:value={newUserName}
-				/>
-				<div class="modal-action">
-					<button
-						on:click={() => {
-							setNewUsername();
-						}}
-						class="btn btn-primary modal-button">Set Username</button
-					>
+			<div class="modal modal-accent sm:modal-middle" class:modal-open={true}>
+				<div class="modal-box">
+					<label for="user-name" class="label">
+						<span class="label-text">Set Username</span>
+					</label>
+					<input
+						id="user-name"
+						type="text"
+						placeholder="Type here"
+						class="input input-bordered input-primary w-full max-w-xs"
+						bind:value={newUserName}
+					/>
+					<div class="modal-action">
+						<button
+							on:click={() => {
+								setNewUsername();
+							}}
+							class="btn btn-primary modal-button">Set Username</button
+						>
+					</div>
 				</div>
 			</div>
-		</div>
 		{/if}
 
 		<div class="modal modal-middle overflow-x-visible" class:modal-open={open}>
@@ -237,26 +273,29 @@
 		</div>
 	</div>
 {:else}
-<div class="hero min-h-screen bg-base-300 pt-20">
-	<div class="hero-content text-center">
-	  <div class="max-w-md">
-		<h1 class="text-5xl font-bold">Evolving Cyborgs</h1>
-		<p class="py-6">What would it be like if your technology worked <b>for</b> you instead of trying to exploit you? <br> Evolving Cyborgs is a gamified habit tracker that is designed to help you create healthier habits.</p>
-		<img class="m-auto" src="../cyborg.svg" alt="cyborg icon">
-		<button class="btn btn-disabled btn-outline mt-5">Sign Up Now</button>
-		<p class="mt-5">Evolving Cyborgs is not accepting new users at this time.</p>
-	  </div>
+	<div class="hero min-h-screen bg-base-300 pt-20">
+		<div class="hero-content text-center">
+			<div class="max-w-md">
+				<h1 class="text-5xl font-bold">Evolving Cyborgs</h1>
+				<p class="py-6">
+					What would it be like if your technology worked <b>for</b> you instead of trying to
+					exploit you? <br /> Evolving Cyborgs is a gamified habit tracker that is designed to help you
+					create healthier habits.
+				</p>
+				<img class="m-auto" src="../cyborg.svg" alt="cyborg icon" />
+				<button class="btn btn-disabled btn-outline mt-5">Sign Up Now</button>
+				<p class="mt-5">Evolving Cyborgs is not accepting new users at this time.</p>
+			</div>
+		</div>
 	</div>
-  </div>
 {/if}
 <BottomNav />
 
-
 <style>
-	img{
+	img {
 		max-width: 300px;
 	}
-	.main-content-container{
+	.main-content-container {
 		background-color: hsl(var(--b3));
 	}
 </style>

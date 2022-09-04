@@ -6,7 +6,7 @@
 	import AnimatedProgress from '../components/AnimatedProgress.svelte';
 	import AnimatedCheck from '../components/AnimatedCheck.svelte';
 	const dispatch = createEventbusDispatcher();
-	import {scale} from 'svelte/transition'
+	import { scale } from 'svelte/transition';
 
 	let habits = [];
 
@@ -58,7 +58,8 @@
 		let mergedHabit = null;
 		habits.forEach((habit) => {
 			if (habit.id == newHabit.id) {
-				mergedHabit = { ...newHabit, timeline: habit.timeline };
+				mergedHabit = { ...newHabit, name: newHabit.name, timeline: habit.timeline };
+				console.log(mergedHabit);
 			}
 		});
 
@@ -73,9 +74,9 @@
 			} else {
 				found = true;
 				if (newTimeline) {
-					return updateTimeline({ ...newHabit, timeline: newTimeline });
+					return updateTimeline({ ...newHabit, timeline: newTimeline, stats: habit.stats});
 				}
-				return updateTimeline({ ...newHabit, timeline: habit.timeline });
+				return updateTimeline({ ...newHabit, timeline: habit.timeline, stats: habit.stats });
 			}
 		});
 		if (!found) {
@@ -89,9 +90,7 @@
 		habitStore.set(habits);
 	}
 
-	function getNewHabitPercent(habit){
-
-	}
+	function getNewHabitPercent(habit) {}
 	//taking in current progress and goal and returning what the new goal should be
 	//3, 5, 10, 15, 20, 30, ...
 	function getNewHabitGoal(progress, goal, name) {
@@ -151,6 +150,10 @@
 		};
 	}
 
+	async function addStatsRelationships(stats) {
+		const { data, error } = await supabase.from('stats_relationships').insert(stats);
+	}
+
 	async function updateHabitsData() {
 		loading = true;
 		let {
@@ -160,17 +163,61 @@
 		} = await supabase
 			.from('habits')
 			.select(
-				`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded)`
+				`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded), stats:stats_relationships(id, stat(id, name, xp, level, next_level_xp, order), habit, value)`
 			)
 			.eq('user_id', $user.id)
 			.order('created_at', 'ascending');
 
+		let statsData = [];
+		let statsToAdd = [];
+
+		if (Habits[0].stats.length == 0) {
+			let { data, error } = await supabase
+				.from(`stats`)
+				.select('*')
+				.eq('user_id', $user.id)
+				.order('order', { ascending: true });
+
+			statsData = data;
+
+			await Promise.all(
+				Habits.map(async (habit) => {
+					statsToAdd = statsData.map((s) => {
+						return { stat: s.id, habit: habit.id };
+					});
+					await addStatsRelationships(statsToAdd);
+				})
+			);
+
+			let {
+				data: habitsRefresh,
+				error: habitsRefreshError,
+				status
+			} = await supabase
+				.from('habits')
+				.select(
+					`id, created_at, is_complete, name, streak, goal, timeline(id, created_at, xp_awarded), stats:stats_relationships(id, stat(id, name, xp, level, next_level_xp, order), habit, value)`
+				)
+				.eq('user_id', $user.id)
+				.order('created_at', 'ascending');
+
+			Habits = habitsRefresh;
+		}
+
 		habits = Habits.map((habit) => {
-			return updateTimeline(habit);
+			return updateTimeline(sortStats(habit));
 		});
+		console.log(habits);
 
 		loading = false;
 		habitStore.set(habits);
+	}
+
+	function sortStats(habit){
+		let sortedStats = habit.stats.sort((a,b) => {
+			return a.stat.order - b.stat.order
+		})
+		return {...habit, stats: sortedStats}
 	}
 
 	function calculateStreak(timeline) {
@@ -208,7 +255,7 @@
 						// dispatch('momentumChange', {
 						// type: 'habit',
 						// change: -0.003 * gapInDates,
-				// });
+						// });
 					} else if (gapInDates == 1) {
 						newHabit = { ...newHabit, is_complete: false };
 					} else if (gapInDates == 0) {
@@ -255,7 +302,7 @@
 				streak = habit.streak + 1;
 				goalProgress = habit.goalProgress + 1;
 			}
-			let newGoal = getNewHabitGoal(goalProgress, habit.goal, habit.name);
+			// let newGoal = getNewHabitGoal(goalProgress, habit.goal, habit.name);
 			let newHabit = {
 				...habit,
 				is_complete: !habit.is_complete,
@@ -270,25 +317,27 @@
 
 			if (newHabit.is_complete) {
 				//add to timeline
-				
+
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: 3,
+					change: 3
 				});
 
 				let xp = 100 + (newHabit.streak + newHabit.goalProgress) * 10;
-				dispatch('addXp', { xp: xp, event: habit.name });
+				dispatch('addXp', { xp: xp, event: habit.name, stats: habit.stats });
 
 				// updateHabitUI(newHabit, [{
 				// 	created_at: new Date(),
 				// 	xp
 				// }, ...newHabit.timeline]);
 
-
-
-				const { data: timeline, error } = await supabase
-					.from('timeline')
-					.insert([{ user_id: $user.id, habit: habit.id, xp_awarded: Math.round(xp + xp * $profileStore.momentum / 100)}]);
+				const { data: timeline, error } = await supabase.from('timeline').insert([
+					{
+						user_id: $user.id,
+						habit: habit.id,
+						xp_awarded: Math.round(xp + (xp * $profileStore.momentum) / 100)
+					}
+				]);
 				if (error) {
 					console.log(error);
 				}
@@ -301,11 +350,11 @@
 				updateHabitUI(habit_update[0], [...newHabit.timeline, timeline[0]]);
 			} else {
 				let xp = habit.timeline[0].xp_awarded;
-				dispatch('addXp', { xp: -xp, event: habit.name });
+				dispatch('addXp', { xp: -xp, event: habit.name, stats: habit.stats });
 
 				dispatch('momentumChange', {
 					type: 'habit',
-					change: -3,
+					change: -3
 				});
 
 				if (habit.timeline && habit.timeline.length > 0) {
@@ -343,8 +392,54 @@
 	}
 
 	let open = false;
-	
+	let openEdit = false;
+	let editedHabit = {};
+	let statsList = [];
+	let statEditing = { value: 0 };
+	$: {
+		statEditing = { ...statsList.find((s) => s.id == statEditingId), value: statEditing.value };
+	}
+	let statEditingId = '';
+	let editMax = 100;
+	$: {
+		editMax = 100;
+		if (editedHabit) {
+			if (editedHabit.stats && editedHabit.stats.length) {
+				editedHabit.stats.forEach((s) => {
+					editMax -= s.value;
+				});
+			}
+		}
+	}
+
+	async function contextMenu(e, habit) {
+		openEdit = true;
+		editedHabit = habit;
+		console.log(habit);
+	}
+
+	async function editHabit() {
+		const { data, error } = await supabase
+			.from('habits')
+			.update({ name: editedHabit.name })
+			.eq('id', editedHabit.id);
+
+		console.log(editedHabit);
+		await Promise.all(
+			editedHabit.stats.map(async (s) => {
+				const { data, error } = await supabase
+					.from('stats_relationships')
+					.update({ value: s.value})
+					.eq('id', s.id);
+				if(error){
+					console.log(error);
+				}
+			})
+		);
+	}
 </script>
+
+<!-- <svelte:body on:contextmenu|preventDefault={(e) => {contextMenu(e)}} /> -->
 
 <div class="content-container">
 	<div class="alert shadow-lg mb-4">
@@ -356,29 +451,37 @@
 	</div>
 	{#if habits}
 		{#each habits as habit (habit.id)}
-			<div class="card bg-base-100 shadow-xl card-compact" in:scale={{duration: 500}}>
+			<div
+				class="card bg-base-100 shadow-xl card-compact"
+				in:scale={{ duration: 500 }}
+				on:contextmenu|preventDefault={(e) => {
+					contextMenu(e, habit);
+				}}
+			>
 				<div class="card-body">
 					<div class="habit-upper">
 						<div>
 							<h2 class="card-title">{habit.name}</h2>
-							
+
 							<p>Streak: {habit.streak}</p>
-							
 						</div>
 
 						<div class="checkbox">
 							{#if habit.is_complete}
-							<AnimatedCheck on:clicked={completeHabit(habit)} />
+								<AnimatedCheck on:clicked={completeHabit(habit)} />
 							{:else}
-							<span on:click={completeHabit(habit)} class="material-symbols-outlined -translate-x-1/2 rounded-full">
-								circle
-							</span>
+								<span
+									on:click={completeHabit(habit)}
+									class="material-symbols-outlined -translate-x-1/2 rounded-full"
+								>
+									circle
+								</span>
 							{/if}
 						</div>
 					</div>
 
 					<AnimatedProgress classColor="progress-accent" bind:value={habit.goalProgress} max={30} />
-					<p>{habit.goalProgress}/30  |  {Math.round(habit.goalProgress/30*100)}%</p>
+					<p>{habit.goalProgress}/30 | {Math.round((habit.goalProgress / 30) * 100)}%</p>
 				</div>
 			</div>
 		{/each}
@@ -390,6 +493,67 @@
 				open = true;
 			}}>Add New Habit</button
 		>
+	</div>
+
+	<div
+		class="modal modal-accent sm:modal-middle"
+		class:modal-open={openEdit}
+		on:click|self={() => {
+			openEdit = false;
+		}}
+	>
+		<div class="modal-box">
+			{#if editedHabit}
+				<h1 class="font-bold text-lg">Edit Habit</h1>
+				<label
+					for="my-modal-7"
+					class="btn btn-sm btn-circle absolute right-2 top-2"
+					on:click={() => {
+						openEdit = false;
+					}}>✕</label
+				>
+				<div class="flex flex-col">
+					<label for="habit-name" class="label">
+						<span class="label-text">Habit Name</span>
+					</label>
+					<input
+						id="habit-name"
+						type="text"
+						placeholder="Type here"
+						class="input input-bordered input-primary w-full max-w-xs"
+						bind:value={editedHabit.name}
+					/>
+					{#if editedHabit.stats}
+						{#each editedHabit.stats as stat}
+							<span class="mt-5 ">{stat.stat.name} | {stat.value}% of xp</span>
+							<input
+								type="range"
+								bind:value={stat.value}
+								min="0"
+								max="100"
+								on:change={() => {
+									if (editMax < 0) {
+										stat.value += editMax;
+									}
+								}}
+								class="range range-xs"
+							/>
+							<div class="w-full flex justify-between text-xs px-2" />
+						{/each}
+						<span class="mt-10 text-lg">Left to allocate: {editMax}%</span>
+					{/if}
+				</div>
+				<div class="modal-action">
+					<button
+						on:click={() => {
+							editHabit();
+							openEdit = false;
+						}}
+						class="btn btn-primary modal-button">Save</button
+					>
+				</div>
+			{/if}
+		</div>
 	</div>
 	<div
 		class="modal modal-accent sm:modal-middle"

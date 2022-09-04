@@ -89,7 +89,7 @@
 		if (momentum > 0) {
 			dispatch('momentumChange', {
 				type: 'productivity',
-				change: momentum / 1000
+				change: momentum
 			});
 		}
 

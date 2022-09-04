@@ -165,7 +165,7 @@
 
 		dispatch('momentumChange', {
 			type: 'vice',
-			change: -0.002
+			change: -2
 		});
 
 		const { data: timeline } = await supabase
@@ -293,7 +293,7 @@
 							on:click={() => {
 								dispatch('momentumChange', {
 									type: 'vice',
-									change: 0.001 * (vice.current_ui.days - vice.last_award),
+									change: 1 * (vice.current_ui.days - vice.last_award),
 								});
 								awardXp(vice.current_ui.days, vice.last_award, vice);
 								vice.last_award = vice.current_ui.days;

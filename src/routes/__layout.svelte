@@ -26,6 +26,7 @@
 	import AnimatedConfetti from '../components/AnimatedConfetti.svelte';
 	import UserReports from '../components/UserReports.svelte';
 	import TopBar from '../components/TopBar.svelte';
+	import { page } from '$app/stores';
 
 	export let sessionInfo;
 
@@ -272,6 +273,8 @@
 			</div>
 		</div>
 	</div>
+{:else if $page.url.pathname == "/demo"}
+	<slot />
 {:else}
 	<div class="hero min-h-screen bg-base-300 pt-20">
 		<div class="hero-content text-center">
